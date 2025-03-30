@@ -3,16 +3,15 @@ import { IDatabase, IMain } from 'pg-promise';
 export interface User {
     id: number;
     name: string;
-    email: string;
     password: string;
 }
 
 export default (db: IDatabase<any>) => {
     return {
-        create: async (name: string, email: string, password: string) => {
+        create: async (name: string, password: string) => {
             return db.one(
-                'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *',
-                [name, email, password],
+                'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *',
+                [name, password],
             );
         },
 
@@ -23,12 +22,11 @@ export default (db: IDatabase<any>) => {
         update: async (
             id: number,
             name: string,
-            email: string,
             password: string,
         ) => {
             return db.one(
-                'UPDATE users SET name = $2, email = $3, password = $4 WHERE id = $1 RETURNING *',
-                [id, name, email, password],
+                'UPDATE users SET name = $2, password = $3 WHERE id = $1 RETURNING *',
+                [id, name, password],
             );
         },
 

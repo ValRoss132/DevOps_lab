@@ -20,16 +20,16 @@ db.connect()
 
 const createTable = async () => {
     try {
+        // await db.none(`DROP TABLE IF EXISTS users;`)
         await db.none(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
-                name TEXT NOT NULL,
-                email TEXT UNIQUE NOT NULL,
+                name TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT NOW(),
                 updated_at TIMESTAMP DEFAULT NOW()
             );
-            `);
+        `);
         console.log('✅ Таблица users создана или уже существует.');
     } catch (error) {
         console.error('❌ Ошибка при создании таблицы:', error);

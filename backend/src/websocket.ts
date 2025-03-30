@@ -4,7 +4,7 @@ import { Server as HttpServer } from 'http';
 export const setupWebSockets = (server: HttpServer) => {
     const io = new Server(server, {
         cors: {
-            origin: '*',
+            origin: ['http://localhost:5173', 'http://192.168.3.62:5173, http://172.20.10.13:5173'],
             methods: ['GET', 'POST'],
         },
     });
