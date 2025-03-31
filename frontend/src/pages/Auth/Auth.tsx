@@ -1,19 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+
+import Loader from '../../components/Loader/Loader';
+
 import { useAuthStore } from '../../stores/useAuthStore';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../../stores/useUserStore';
+// import { useUserStore } from '../../stores/useUserStore';
+
+interface TerminalLine {
+    type: 'input' | 'output' | 'error';
+    content: string;
+    isPassword?: boolean;
+    withLoader?: boolean;
+}
 
 const Auth: React.FC = () => {
     const { login, checkAuth } = useAuthStore();
-    const { user } = useUserStore();
+    // const { user } = useUserStore();
     const navigate = useNavigate();
-    const [form, setForm] = useState({
-        nickname: '',
-        password: '',
-    });
-    const [error, setError] = useState('');
+    const [lines, setLines] = useState<TerminalLine[]>([]);
+    const [currentInput, setCurrentInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const endRef = useRef<HTMLDivElement>(null);
 
     // Проверка авторизации при монтировании
     useEffect(() => {
@@ -25,74 +34,175 @@ const Auth: React.FC = () => {
     }, [checkAuth]);
 
     // Перенаправление если пользователь авторизован
-    useEffect(() => {
-        if (user && !isCheckingAuth) {
-            navigate('/chat');
-        }
-    }, [user, isCheckingAuth, navigate]);
+    // useEffect(() => {
+    //     if (user && !isCheckingAuth) {
+    //         navigate('/chat');
+    //     }
+    // }, [user, isCheckingAuth, navigate]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-        setError('');
+    // Фокус на инпут при изменении
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [lines]);
+
+    // Скролл вниз при добавлении новых строк
+    useEffect(() => {
+        if (endRef.current) {
+            endRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [lines]);
+
+    // Начальное приглашение
+    useEffect(() => {
+        if (!isCheckingAuth && lines.length === 0) {
+            setLines([
+                {
+                    type: 'output',
+                    content: 'Enter your nickname:',
+                },
+            ]);
+        }
+    }, [isCheckingAuth]);
+
+    const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            const currentLine = lines[lines.length - 1];
+
+            if (currentLine.content === 'Enter your nickname:') {
+                // Обработка никнейма
+                setLines((prev) => [
+                    ...prev,
+                    { type: 'input', content: currentInput },
+                    { type: 'output', content: 'Enter your password:' },
+                ]);
+                setCurrentInput('');
+                setIsLoading(true);
+
+                // Здесь можно добавить проверку никнейма
+                // Для примера просто продолжаем
+                setIsLoading(false);
+            } else if (currentLine.content === 'Enter your password:') {
+                // Обработка пароля
+                setLines((prev) => [
+                    ...prev,
+                    {
+                        type: 'input',
+                        content: '',
+                        isPassword: true,
+                    },
+                ]);
+                setCurrentInput('');
+                setIsLoading(true);
+
+                // Находим введенный никнейм (предпоследняя строка перед паролем)
+                const nicknameLine = lines[lines.length - 2];
+                const nickname =
+                    nicknameLine.type === 'input' ? nicknameLine.content : '';
+
+                const errorMessage = await login(nickname, currentInput);
+                setIsLoading(false);
+
+                if (errorMessage) {
+                    setLines((prev) => [
+                        ...prev,
+                        { type: 'error', content: errorMessage },
+                        { type: 'output', content: 'Enter your nickname:' },
+                    ]);
+                } else {
+                    setLines((prev) => [
+                        ...prev,
+                        {
+                            type: 'output',
+                            content: 'Login successful! Redirecting to chat',
+                            withLoader: true,
+                        },
+                    ]);
+                    await new Promise((resolve) => setTimeout(resolve, 500));
+                    await checkAuth();
+                    navigate('/chat');
+                }
+            } else if (currentLine.type === 'error') {
+                // После ошибки снова запрашиваем никнейм
+                setLines((prev) => [
+                    ...prev,
+                    { type: 'output', content: 'Enter your nickname:' },
+                ]);
+                setCurrentInput('');
+            }
+        }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
-
-        const errorMessage = await login(form.nickname, form.password);
-
-        setIsLoading(false);
-
-        if (errorMessage) {
-            setError(errorMessage);
-        }
-        // navigate('/chat');
-        // Навигация после успешного входа будет выполнена во втором useEffect
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentInput(e.target.value);
     };
 
     return (
-        <div>
-            <h2 className="text-2xl">Авторизация</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label>&#62;</label>
-                    <input
-                        type="text"
-                        name="nickname"
-                        placeholder="Nickname"
-                        value={form.nickname}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>&#62;</label>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={form.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                {error && (
-                    <div className="text-red-500 text-sm mt-2">{error}</div>
-                )}
-
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? 'Вход...' : 'Войти'}
+        <div className="p-1 text-m terminal-container">
+            <div className="flex items-center mb-4 gap-2">
+                <span>Authorization</span>
+                <span>{' | '}</span>
+                <button
+                    onClick={() => navigate('/register')}
+                    className="text-white hover:underline"
+                >
+                    register
                 </button>
+            </div>
 
-                <div className="text-center text-sm mt-4">
-                    Нет аккаунта?{' '}
-                    <button type="button" onClick={() => navigate('/register')}>
-                        Зарегистрироваться
-                    </button>
+            <div className="primary-container overflow-hidden flex">
+                <div className="flex-1 overflow-y-auto flex flex-col">
+                    {lines.map((line, index) => (
+                        <div
+                            key={index}
+                            className={`flex ${line.type === 'error' ? 'text-red-300' : 'text-white'}`}
+                        >
+                            <span className="mr-2">{'~ $'}&nbsp;</span>
+                            {line.type === 'input' && line.isPassword ? (
+                                <span className="text-white"></span>
+                            ) : (
+                                <>
+                                    <span>{line.content}&nbsp;</span>
+                                    {line.withLoader && (
+                                        <Loader active={true} speed={100} />
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    ))}
+
+                    {(lines.length === 0 ||
+                        lines[lines.length - 1].type !== 'error') && (
+                        <div className="flex">
+                            <span className="text-white mr-2">{'>'}&nbsp;</span>
+                            <input
+                                ref={inputRef}
+                                type={
+                                    lines[lines.length - 1]?.content ===
+                                    'Enter your password:'
+                                        ? 'password'
+                                        : 'text'
+                                }
+                                value={currentInput}
+                                onChange={handleChange}
+                                onKeyDown={handleKeyDown}
+                                className={`text-white bg-transparent border-none focus:outline-none flex-1 ${
+                                    lines[lines.length - 1]?.content ===
+                                    'Enter your password:'
+                                        ? 'opacity-0'
+                                        : ''
+                                }`}
+                                disabled={isLoading}
+                            />
+                        </div>
+                    )}
+
+                    {isLoading && <Loader active={true} speed={100} />}
+
+                    <div ref={endRef} />
                 </div>
-            </form>
+            </div>
         </div>
     );
 };

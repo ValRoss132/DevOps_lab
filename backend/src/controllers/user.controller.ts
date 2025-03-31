@@ -32,7 +32,6 @@ export const updateUser = async (req: Request, res: Response) => {
         const user = await User.update(
             parseInt(req.params.id),
             name,
-            password,
         );
         if (!user) res.status(404).json({ error: 'Пользователь не найден' });
         res.status(200).json(user);

@@ -11,12 +11,9 @@ function App() {
             <Routes>
                 <Route path="profile" element />
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/registration" element={<Registration />} />
+                <Route path="/register" element={<Registration />} />
                 <Route path="/chat" element={<Chat />} />
-                <Route
-                    path="*"
-                    element={<Navigate to="/registration" replace />}
-                />
+                <Route path="*" element={<Navigate to="/auth" replace />} />
             </Routes>
         </BrowserRouter>
     );

@@ -9,7 +9,6 @@ interface AuthState {
     checkAuth: () => Promise<void>;
 }
 
-// const API_URL = 'http://172.20.10.13:4200/api/';
 const API_URL = `http://${window.location.hostname}:4200/api/`;
 
 export const useAuthStore = create<AuthState>(() => ({
@@ -43,6 +42,7 @@ export const useAuthStore = create<AuthState>(() => ({
     logout: async () => {
         try {
             await axios.post(`${API_URL}auth/logout`, {}, { withCredentials: true });
+
         } catch (err) {
             console.error('Ошибка при выходе', err);
         }

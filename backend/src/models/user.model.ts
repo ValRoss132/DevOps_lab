@@ -22,11 +22,10 @@ export default (db: IDatabase<any>) => {
         update: async (
             id: number,
             name: string,
-            password: string,
         ) => {
             return db.one(
-                'UPDATE users SET name = $2, password = $3 WHERE id = $1 RETURNING *',
-                [id, name, password],
+                'UPDATE users SET name = $2 WHERE id = $1 RETURNING *',
+                [id, name],
             );
         },
 

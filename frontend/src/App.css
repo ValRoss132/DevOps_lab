@@ -4,4 +4,16 @@ input {
   outline: none;
   border: none;
   background: none;
+  -webkit-appearance: none;
+  appearance: none;
+  overscroll-behavior: contain;
+
+}
+
+.primary-container {
+  height: calc(100dvh - 29px);
+}
+
+.border {
+  border-bottom: 1px solid gray;
 }

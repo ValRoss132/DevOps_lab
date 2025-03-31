@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { useAuthStore } from '../../stores/useAuthStore';
+import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+
+import { useAuthStore } from '../../stores/useAuthStore';
 import { useUserStore } from '../../stores/useUserStore';
 
 interface Message {
@@ -20,13 +22,21 @@ const socket: Socket = io(SERVER_URL, {
 });
 
 const Chat: React.FC = () => {
+    const { checkAuth, logout } = useAuthStore();
+    const { user, updateUserName } = useUserStore();
+
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [isConnected, setIsConnected] = useState(false);
-    const { checkAuth } = useAuthStore();
-    const { user } = useUserStore();
+    const [isEditing, setIsEditing] = useState(false);
+    const [newName, setNewName] = useState(user?.name || '');
+
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        setIsConnected(socket.connected);
+
         socket.on('connect', () => setIsConnected(true));
         socket.on('disconnect', () => setIsConnected(false));
 
@@ -72,41 +82,122 @@ const Chat: React.FC = () => {
         }
     };
 
-    console.log(user);
+    const handleUpdateUserName = async () => {
+        if (newName.trim() && newName !== user?.name) {
+            const error = await updateUserName(newName);
+            if (!error) {
+                setIsEditing(false);
+            } else {
+                alert(error);
+            }
+        }
+    };
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/auth');
+    };
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView();
+    }, [messages]);
 
     return (
-        <div className="p-1">
-            <div className="flex items-center mb-4 gap-2">
-                <span className="text-3xl">
-                    Чат {isConnected ? '🟢' : '🔴'}
-                </span>
+        <div className="p-1 text-m">
+            <div className="border flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                    <span>Chat</span>
+                    {isConnected ? (
+                        <span>
+                            [<span className="text-green-300">connected</span>]
+                        </span>
+                    ) : (
+                        <span>
+                            [<span className="text-red-300">not connected</span>
+                            ]
+                        </span>
+                    )}
+                </div>
                 {user && (
-                    <div className="text-m text-gray-500">
-                        <span className="font-medium">{user.name}</span>
+                    <div>
+                        {isEditing ? (
+                            <>
+                                <button
+                                    onClick={handleUpdateUserName}
+                                    className="text-white"
+                                >
+                                    save
+                                </button>
+                                <span>{' | '}</span>
+                                <button
+                                    onClick={() => setIsEditing(false)}
+                                    className=" text-white"
+                                >
+                                    cancel
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <span className="text-gray-200 font-bold">
+                                    {user.name}
+                                </span>
+                                <span>{' | '}</span>
+                                <button onClick={() => setIsEditing(true)}>
+                                    edit
+                                </button>
+                                <span>{' | '}</span>
+                                <button
+                                    onClick={handleLogout}
+                                    className=" text-white "
+                                >
+                                    logout
+                                </button>
+                            </>
+                        )}
                     </div>
+                )}
+                {!user && (
+                    <button onClick={() => navigate('/auth')}>login</button>
                 )}
             </div>
 
-            <div className="space-y-1">
-                {messages.map((msg) => (
-                    <div key={msg.id} className="text-sm">
-                        <span className="text-gray-200">{msg.userName}</span>{' '}
-                        <span className="text-gray-400">
-                            [{dayjs(msg.timestamp).format('HH:mm:ss')}]
-                        </span>{' '}
-                        <span>{'~ $'}</span> {msg.text}
+            <div className="primary-container overflow-hidden flex">
+                <div className="flex-1 overflow-y-auto flex flex-col">
+                    {messages.map((msg) => (
+                        <div key={msg.id}>
+                            <span className="text-gray-200">
+                                {msg.userName}
+                            </span>{' '}
+                            <span className="text-gray-400">
+                                [{dayjs(msg.timestamp).format('HH:mm:ss')}]
+                            </span>{' '}
+                            <span>{'~ $'}</span> {msg.text}
+                        </div>
+                    ))}
+                    <div className="flex">
+                        <span className="text-white">{'>'}&nbsp;</span>
+                        <input
+                            type="text"
+                            value={isEditing ? newName : message}
+                            onChange={(e) =>
+                                isEditing
+                                    ? setNewName(e.target.value)
+                                    : setMessage(e.target.value)
+                            }
+                            onKeyDown={handleKeyDown}
+                            className="text-white border-none focus:outline-none ml-2 w-full"
+                            disabled={!user && !isConnected}
+                            placeholder={
+                                !user
+                                    ? 'unauthorized'
+                                    : isEditing
+                                      ? 'enter new name'
+                                      : ''
+                            }
+                            autoFocus
+                        />
+                        <div ref={messagesEndRef} />
                     </div>
-                ))}
-                <div className="flex">
-                    <span className="text-white">{'>'}</span>
-                    <input
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        className="text-white border-none focus:outline-none ml-2 w-full"
-                        autoFocus
-                    />
                 </div>
             </div>
         </div>
