@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { create } from 'zustand';
 
-interface User {
+export interface User {
     id: number;
     name: string;
 }
@@ -23,16 +23,15 @@ export const useUserStore = create<UserState>((set, get) => ({
         if (!user) return 'Пользователь не найден';
 
         try {
-            const response = await axios.put(`${API_URL}/${user.id}`, { name: newName }, { withCredentials: true });
+            const response = await axios.put<{ name: User['name'] }>(
+                `${API_URL}/${user.id}`,
+                { name: newName },
+                { withCredentials: true },
+            );
             set({ user: { ...user, name: response.data.name } });
             return null;
-        } catch (err: unknown) {
-            if (axios.isAxiosError(err) && err.response?.data) {
-
-                return axios.AxiosError.ERR_BAD_REQUEST || 'Ошибка смены имени';
-            }
-            return "Ошибка сохранения"
+        } catch {
+            return 'Ошибка сохранения';
         }
     },
-
 }));

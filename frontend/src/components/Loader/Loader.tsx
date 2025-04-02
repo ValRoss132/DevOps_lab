@@ -13,10 +13,10 @@ const TerminalLoader: React.FC<TerminalLoaderProps> = ({
     const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
-        let interval: NodeJS.Timeout;
+        let interval: number;
 
         if (active) {
-            interval = setInterval(() => {
+            interval = window.setInterval(() => {
                 setCurrentIndex((prev) => (prev + 1) % loaderChars.length);
             }, speed);
         }

@@ -1,11 +1,12 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { useUserStore } from './useUserStore';
+import { User } from './useUserStore';
 
 interface AuthState {
     register: (name: string, password: string) => Promise<string | null>;
     login: (name: string, password: string) => Promise<string | null>;
-    logout: () => Promise<void>;
+    logout: () => Promise<string | null>;
     checkAuth: () => Promise<void>;
 }
 
@@ -17,51 +18,49 @@ export const useAuthStore = create<AuthState>(() => ({
             await axios.post(
                 `${API_URL}auth/register`,
                 { name, password },
-                { withCredentials: true }
+                { withCredentials: true },
             );
             return null;
-        } catch (err: unknown) {
-            if (axios.isAxiosError(err) && err.response?.data) {
-
-                return axios.AxiosError.ERR_BAD_REQUEST || 'Ошибка регистрации';
-            }
-            return "Неизвестная ошибка"
+        } catch {
+            return 'Registration error';
         }
     },
 
     login: async (name, password) => {
         try {
-            const res = await axios.post(
+            const res = await axios.post<{ user: User }>(
                 `${API_URL}auth/login`,
                 { name, password },
-                { withCredentials: true }
+                { withCredentials: true },
             );
-            useUserStore.getState().setUser(res.data.user)
+            useUserStore.getState().setUser(res.data.user);
             return null;
-        } catch (err: unknown) {
-            if (axios.isAxiosError(err) && err.response?.data) {
-
-                return axios.AxiosError.ERR_BAD_REQUEST || 'Ошибка входа';
-            }
-            return "Ошибка входа"
+        } catch {
+            return 'Login error';
         }
     },
 
     logout: async () => {
         try {
-            await axios.post(`${API_URL}auth/logout`, {}, { withCredentials: true });
-
-        } catch (err) {
-            console.error('Ошибка при выходе', err);
+            await axios.post(
+                `${API_URL}auth/logout`,
+                {},
+                { withCredentials: true },
+            );
+            return null;
+        } catch {
+            return 'Logout error';
         }
     },
 
     checkAuth: async () => {
         try {
-            const res = await axios.get(`${API_URL}auth/me`, { withCredentials: true });
-            useUserStore.getState().setUser(res.data.user)
+            const res = await axios.get<{ user: User }>(`${API_URL}auth/me`, {
+                withCredentials: true,
+            });
+            useUserStore.getState().setUser(res.data.user);
         } catch {
-            useUserStore.getState().setUser(null)
+            useUserStore.getState().setUser(null);
         }
     },
 }));

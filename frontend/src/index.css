@@ -1,52 +1,51 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
 
-  /* font-synthesis: none;
+    /* font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; */
-
 }
 
 * {
-  background-color: none;
-  padding: none;
-  margin: 0;
-  border: none;
-  outline: none;
+    background-color: none;
+    padding: none;
+    margin: 0;
+    border: none;
+    outline: none;
 }
 
-*::-webkit-scrollbar{
-  display: none;
+*::-webkit-scrollbar {
+    display: none;
 }
 
 a {
-  font-weight: 500;
-  text-decoration: inherit;
+    font-weight: 500;
+    text-decoration: inherit;
 }
 
 html {
-  scroll-padding-top: 300px;
+    scroll-padding-top: 300px;
 }
 
 body {
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+    font-size: 3.2em;
+    line-height: 1.1;
 }
 
 button {
-  font-family: inherit;
-  cursor: pointer;
+    font-family: inherit;
+    cursor: pointer;
 }
