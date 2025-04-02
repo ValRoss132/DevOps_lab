@@ -26,8 +26,12 @@ export const useUserStore = create<UserState>((set, get) => ({
             const response = await axios.put(`${API_URL}/${user.id}`, { name: newName }, { withCredentials: true });
             set({ user: { ...user, name: response.data.name } });
             return null;
-        } catch (err: any) {
-            return err.response?.data?.error || 'Ошибка при изменении имени';
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err) && err.response?.data) {
+
+                return axios.AxiosError.ERR_BAD_REQUEST || 'Ошибка смены имени';
+            }
+            return "Ошибка сохранения"
         }
     },
 

@@ -64,7 +64,7 @@ const Auth: React.FC = () => {
                 },
             ]);
         }
-    }, [isCheckingAuth]);
+    }, [isCheckingAuth, lines.length]);
 
     const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {

@@ -1,8 +1,9 @@
 import pgPromise from 'pg-promise';
 import config from '../config';
+import { User } from '../models/user.model';
 
 const pgp = pgPromise();
-const db = pgp({
+const db = pgp<{ users: User }>({
     host: config.database.host,
     port: config.database.port,
     database: config.database.name,

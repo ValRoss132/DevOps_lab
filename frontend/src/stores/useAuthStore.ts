@@ -20,8 +20,12 @@ export const useAuthStore = create<AuthState>(() => ({
                 { withCredentials: true }
             );
             return null;
-        } catch (err: any) {
-            return err.response?.data?.error || 'Ошибка регистрации';
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err) && err.response?.data) {
+
+                return axios.AxiosError.ERR_BAD_REQUEST || 'Ошибка регистрации';
+            }
+            return "Неизвестная ошибка"
         }
     },
 
@@ -34,8 +38,12 @@ export const useAuthStore = create<AuthState>(() => ({
             );
             useUserStore.getState().setUser(res.data.user)
             return null;
-        } catch (err: any) {
-            return err.response?.data?.error || 'Ошибка входа';
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err) && err.response?.data) {
+
+                return axios.AxiosError.ERR_BAD_REQUEST || 'Ошибка входа';
+            }
+            return "Ошибка входа"
         }
     },
 

@@ -9,9 +9,9 @@ const config = {
         port: Number(process.env.DB_PORT) || 5432,
         name: process.env.DB_NAME || 'database',
         user: process.env.DB_USER || 'postgres',
-        password: process.env.DB_PASSWORD || 'password'
+        password: process.env.DB_PASSWORD || 'password',
     },
-    nodeEnv: process.env.NODE_ENV || 'development'
-}
+    nodeEnv: process.env.NODE_ENV || 'development',
+};
 
-export default config
+export default config;

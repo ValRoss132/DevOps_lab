@@ -1,4 +1,5 @@
-import { IDatabase, IMain } from 'pg-promise';
+import { IDatabase } from 'pg-promise';
+import { IClient } from 'pg-promise/typescript/pg-subset';
 
 export interface User {
     id: number;
@@ -6,7 +7,7 @@ export interface User {
     password: string;
 }
 
-export default (db: IDatabase<any>) => {
+export default (db: IDatabase<{ users: User } | IClient>) => {
     return {
         create: async (name: string, password: string) => {
             return db.one(
@@ -19,10 +20,7 @@ export default (db: IDatabase<any>) => {
             return db.one('SELECT * FROM users WHERE id = $1', [id]);
         },
 
-        update: async (
-            id: number,
-            name: string,
-        ) => {
+        update: async (id: number, name: string) => {
             return db.one(
                 'UPDATE users SET name = $2 WHERE id = $1 RETURNING *',
                 [id, name],
@@ -30,7 +28,11 @@ export default (db: IDatabase<any>) => {
         },
 
         delete: async (id: number) => {
-            return db.result('DELETE FROM users WHERE id = $1', [id], r => r.rowCount);
+            return db.result(
+                'DELETE FROM users WHERE id = $1',
+                [id],
+                (r) => r.rowCount,
+            );
         },
     };
 };

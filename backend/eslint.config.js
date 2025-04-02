@@ -26,7 +26,6 @@ export default tseslint.config(
                 { argsIgnorePattern: '^_' },
             ],
             '@typescript-eslint/explicit-module-boundary-types': 'off',
-            'no-console': 'warn',
         },
     },
 );

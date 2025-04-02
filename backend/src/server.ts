@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import os from 'os';
@@ -14,10 +14,16 @@ const port = config.port;
 const PgSession = pgSession(session);
 
 async function main() {
-    app.use(cors({
-        origin: ['http://localhost:5173', 'http://192.168.3.62:5173', 'http://172.20.10.13:5173'],
-        credentials: true
-    }));
+    app.use(
+        cors({
+            origin: [
+                'http://localhost:5173',
+                'http://192.168.3.62:5173',
+                'http://172.20.10.13:5173',
+            ],
+            credentials: true,
+        }),
+    );
     app.use(express.json());
 
     app.use(
@@ -31,7 +37,7 @@ async function main() {
                     password: config.database.password,
                 },
                 tableName: 'session',
-                createTableIfMissing: true
+                createTableIfMissing: true,
             }),
             secret: 'super_secret_key',
             resave: false,
