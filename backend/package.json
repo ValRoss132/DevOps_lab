@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "ts-node src/server.ts",
-        "dev": "nodemon src/server.ts",
+        "dev": "nodemon --exec ts-node src/server.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
@@ -14,7 +14,6 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "type": "module",
     "dependencies": {
         "bcryptjs": "^3.0.2",
         "connect-pg-simple": "^10.0.0",
@@ -30,7 +29,7 @@
         "@types/connect-pg-simple": "^7.0.3",
         "@types/express": "^5.0.0",
         "@types/express-session": "^1.18.1",
-        "@types/node": "^22.13.10",
+        "@types/node": "^22.14.0",
         "@typescript-eslint/eslint-plugin": "^8.29.0",
         "@typescript-eslint/parser": "^8.29.0",
         "eslint": "^9.22.0",

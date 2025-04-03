@@ -20,6 +20,7 @@ async function main() {
                 'http://localhost:5173',
                 'http://192.168.3.62:5173',
                 'http://172.20.10.13:5173',
+                'http://192.168.110.119:5173',
             ],
             credentials: true,
         }),
