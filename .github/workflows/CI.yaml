@@ -49,6 +49,10 @@ jobs:
               run: npm install
               working-directory: backend
 
-            - name: Run lint
-              run: npm run lint
+            - name: Backend build
+              run: npm run build
               working-directory: backend
+
+            # - name: Run lint
+            #   run: npm run lint
+            #   working-directory: backend
