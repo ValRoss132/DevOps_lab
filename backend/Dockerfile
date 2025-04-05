@@ -8,6 +8,6 @@ RUN npm install
 
 COPY . . 
 
-RUN npm install -g nodemon typescript ts-node
+RUN npm run build
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]

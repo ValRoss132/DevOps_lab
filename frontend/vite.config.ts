@@ -8,9 +8,9 @@ export default defineConfig({
     server: {
         host: true,
     },
-    build: {
-        rollupOptions: {
-            external: ['axios'], // Добавьте эту строку
-        },
-    },
+    // build: {
+    //     rollupOptions: {
+    //         external: ['axios'], // Добавьте эту строку
+    //     },
+    // },
 });
