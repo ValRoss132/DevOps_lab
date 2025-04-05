@@ -30,6 +30,7 @@ const Chat: React.FC = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [newName, setNewName] = useState(user?.name || '');
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
@@ -58,7 +59,11 @@ const Chat: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        checkAuth();
+        const check = async () => {
+            await checkAuth();
+            setIsCheckingAuth(false);
+        };
+        check();
     }, [checkAuth]);
 
     const handleSendMessage = () => {
@@ -102,6 +107,8 @@ const Chat: React.FC = () => {
         messagesEndRef.current?.scrollIntoView();
     }, [messages]);
 
+    // console.log(user);
+
     return (
         <div className="p-1 text-m">
             <div className="border flex items-center gap-2">
@@ -118,7 +125,7 @@ const Chat: React.FC = () => {
                         </span>
                     )}
                 </div>
-                {user && (
+                {user && !isCheckingAuth && (
                     <div>
                         {isEditing ? (
                             <>

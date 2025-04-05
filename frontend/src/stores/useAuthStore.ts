@@ -7,7 +7,7 @@ interface AuthState {
     register: (name: string, password: string) => Promise<string | null>;
     login: (name: string, password: string) => Promise<string | null>;
     logout: () => Promise<string | null>;
-    checkAuth: () => Promise<void>;
+    checkAuth: () => Promise<boolean>;
 }
 
 const API_URL = `http://${window.location.hostname}:4200/api/`;
@@ -54,13 +54,17 @@ export const useAuthStore = create<AuthState>(() => ({
     },
 
     checkAuth: async () => {
+        console.log("checking")
         try {
             const res = await axios.get<{ user: User }>(`${API_URL}auth/me`, {
                 withCredentials: true,
             });
+            console.log(res)
             useUserStore.getState().setUser(res.data.user);
+            return true
         } catch {
             useUserStore.getState().setUser(null);
+            return false
         }
     },
 }));

@@ -119,9 +119,10 @@ const Auth: React.FC = () => {
                             withLoader: true,
                         },
                     ]);
-                    await new Promise((resolve) => setTimeout(resolve, 500));
                     await checkAuth();
-                    navigate('/chat');
+                    setTimeout(() => {
+                        navigate('/chat');
+                    }, 5000);
                 }
             } else if (currentLine.type === 'error') {
                 // После ошибки снова запрашиваем никнейм

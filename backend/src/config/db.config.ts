@@ -22,6 +22,7 @@ db.connect()
 const createTable = async () => {
     try {
         // await db.none(`DROP TABLE IF EXISTS users;`)
+        
         await db.none(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,

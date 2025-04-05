@@ -12,6 +12,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         );
         if (existingUser) {
             res.status(400).json({ error: 'The nickname is already taken' });
+            return
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -20,7 +21,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             [name, hashedPassword],
         );
 
-        req.session.userId = newUser.id;
+        // req.session.userId = newUser.id;
         res.status(201).json({
             message: 'Registration successful',
             user: newUser,
@@ -40,11 +41,13 @@ export const login = async (req: Request, res: Response) => {
         ]);
         if (!user) {
             res.status(400).json({ error: 'User not found' });
+            return
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             res.status(400).json({ error: 'Incorrect password' });
+            return
         }
 
         await db.none("DELETE FROM session WHERE sess->>'userId' = $1::TEXT", [
@@ -52,13 +55,26 @@ export const login = async (req: Request, res: Response) => {
         ]);
 
         req.session.userId = user.id;
-        res.json({
-            message: 'Login completed',
-            user: { id: user.id, name: user.name },
+        req.session.save((err) => {
+            if (err) {
+                console.error('Session save error:', err);
+                return res.status(500).json({ error: 'Session save failed' });
+            }
+        
+            res.json({
+                message: 'Login completed',
+                user: { id: user.id, name: user.name },
+            });
         });
+        // res.json({
+        //     message: 'Login completed',
+        //     user: { id: user.id, name: user.name },
+        // });
+        return
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error logging in' });
+        return
     }
 };
 
@@ -76,6 +92,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
         // Проверяем, есть ли userId в сессии
         if (!req.session.userId) {
             res.status(401).json({ error: 'Unauthorization' });
+            return
         }
 
         // Получаем данные пользователя из БД
@@ -88,6 +105,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
             // Если пользователь не найден (возможно был удален), очищаем сессию
             req.session.destroy(() => {});
             res.status(404).json({ error: 'User not found' });
+            return
         }
 
         res.json({ user });
