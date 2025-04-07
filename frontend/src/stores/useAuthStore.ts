@@ -54,12 +54,10 @@ export const useAuthStore = create<AuthState>(() => ({
     },
 
     checkAuth: async () => {
-        console.log("checking")
         try {
             const res = await axios.get<{ user: User }>(`${API_URL}auth/me`, {
                 withCredentials: true,
             });
-            console.log(res)
             useUserStore.getState().setUser(res.data.user);
             return true
         } catch {

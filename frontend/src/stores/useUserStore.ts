@@ -20,7 +20,7 @@ export const useUserStore = create<UserState>((set, get) => ({
 
     updateUserName: async (newName) => {
         const user = get().user;
-        if (!user) return 'Пользователь не найден';
+        if (!user) return 'User not found';
 
         try {
             const response = await axios.put<{ name: User['name'] }>(
@@ -31,7 +31,7 @@ export const useUserStore = create<UserState>((set, get) => ({
             set({ user: { ...user, name: response.data.name } });
             return null;
         } catch {
-            return 'Ошибка сохранения';
+            return 'Save error';
         }
     },
 }));

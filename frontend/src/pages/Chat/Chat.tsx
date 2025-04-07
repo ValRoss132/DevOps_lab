@@ -75,8 +75,8 @@ const Chat: React.FC = () => {
                 userName: user.name,
                 timestamp: new Date(),
             };
-            socket.emit('message', newMessage); // Клиент теперь отправляет 'message', а не 'sendMessage'
-            setMessages((prev) => [...prev, newMessage]); // Мгновенное отображение сообщения
+            socket.emit('message', newMessage);
+            setMessages((prev) => [...prev, newMessage]);
             setMessage('');
         }
     };

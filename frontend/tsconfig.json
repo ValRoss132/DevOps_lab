@@ -6,6 +6,6 @@
     ],
     "compilerOptions": {
     "baseUrl": "./src",
-    "types": ["node"],
+    "types": ["node", "jest"],
     },
 }
