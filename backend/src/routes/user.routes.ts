@@ -1,10 +1,15 @@
 import { Router } from 'express';
-import {
+import db from '../config/db.config';
+import userModel from '../models/user.model';
+import { createUserController } from '../controllers/user.controller.factory';
+
+const User = userModel(db);
+export const {
     createUser,
     getUser,
     updateUser,
     deleteUser,
-} from '../controllers/user.controller';
+} = createUserController(User);
 
 const router = Router();
 

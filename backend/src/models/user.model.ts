@@ -36,3 +36,4 @@ export default (db: IDatabase<{ users: User } | IClient>) => {
         },
     };
 };
+

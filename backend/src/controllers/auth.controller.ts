@@ -27,7 +27,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             user: newUser,
         });
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: 'Error during registration' });
     }
 };
@@ -57,7 +56,6 @@ export const login = async (req: Request, res: Response) => {
         req.session.userId = user.id;
         req.session.save((err) => {
             if (err) {
-                console.error('Session save error:', err);
                 return res.status(500).json({ error: 'Session save failed' });
             }
         
@@ -72,7 +70,6 @@ export const login = async (req: Request, res: Response) => {
         // });
         return
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: 'Error logging in' });
         return
     }
@@ -81,9 +78,9 @@ export const login = async (req: Request, res: Response) => {
 export const logout = (req: Request, res: Response) => {
     req.session.destroy((err) => {
         if (err) {
-            res.status(500).json({ error: 'Error logging in' });
+            res.status(500).json({ error: 'Error logout' });
         }
-        res.json({ message: 'Login completed' });
+        res.json({ message: 'Logout completed' });
     });
 };
 
@@ -110,7 +107,6 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 
         res.json({ user });
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: 'Error retrieving user data' });
     }
 };
