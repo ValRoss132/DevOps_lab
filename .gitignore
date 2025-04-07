@@ -36,3 +36,5 @@ media/
 *.sqlite3
 *.sqlite
 *.sql
+
+terraform-key.json
