@@ -1,6 +1,6 @@
-import type { Config } from 'jest';
 
-const config: Config = {
+
+export default {
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
@@ -18,4 +18,3 @@ const config: Config = {
     },
 };
 
-export default config;
