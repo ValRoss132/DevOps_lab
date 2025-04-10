@@ -10,6 +10,7 @@ interface UserState {
     user: User | null;
     setUser: (user: User | null) => void;
     updateUserName: (newName: string) => Promise<string | null>;
+    deleteUser: () => Promise<string> 
 }
 
 const API_URL = `http://${window.location.hostname}:4200/api/users`;
@@ -34,4 +35,16 @@ export const useUserStore = create<UserState>((set, get) => ({
             return 'Save error';
         }
     },
+
+    deleteUser: async () => {
+        const user = get().user;
+        if (!user) return 'User not found'
+        try {
+            await axios.delete(`${API_URL}/${user.id}`)
+            set({user: null})
+            return "User deleted"
+        } catch {
+            return "Delete user error"
+        }
+    }
 }));

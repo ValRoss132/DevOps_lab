@@ -23,7 +23,7 @@ const socket: Socket = io(SERVER_URL, {
 
 const Chat: React.FC = () => {
     const { checkAuth, logout } = useAuthStore();
-    const { user, updateUserName } = useUserStore();
+    const { user, updateUserName, deleteUser } = useUserStore();
 
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<Message[]>([]);
@@ -103,11 +103,14 @@ const Chat: React.FC = () => {
         navigate('/auth');
     };
 
+    const handleDelete = async () => {
+        await deleteUser();
+        navigate('/auth');
+    };
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView();
     }, [messages]);
-
-    // console.log(user);
 
     return (
         <div className="p-1 text-m">
@@ -141,6 +144,13 @@ const Chat: React.FC = () => {
                                     className=" text-white"
                                 >
                                     cancel
+                                </button>
+                                <span>{' | '}</span>
+                                <button
+                                    onClick={handleDelete}
+                                    className="text-white"
+                                >
+                                    delete
                                 </button>
                             </>
                         ) : (
