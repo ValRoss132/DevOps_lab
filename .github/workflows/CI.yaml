@@ -16,30 +16,30 @@ jobs:
               with:
                   node-version: "20.18.0"
                   cache: npm
-                  cache-dependency-path: dev_lab/frontend/package-lock.json
+                  cache-dependency-path: frontend/package-lock.json
 
             - name: Install frontend dependencies
               run: npm install
-              working-directory: dev_lab/frontend
+              working-directory: frontend
 
             - name: Test frontend
               run: npm run test
-              working-directory: dev_lab/frontend
+              working-directory: frontend
 
             - name: Setup Node.js (Backend)
               uses: actions/setup-node@v4
               with:
                   node-version: "20.18.0"
                   cache: npm
-                  cache-dependency-path: dev_lab/backend/package-lock.json
+                  cache-dependency-path: backend/package-lock.json
 
             - name: Install backend dependencies
               run: npm install
-              working-directory: dev_lab/backend
+              working-directory: backend
 
             - name: Test backend
               run: npm run test
-              working-directory: dev_lab/backend
+              working-directory: backend
 
     build:
         name: Build (Frontend + Backend)
@@ -55,27 +55,27 @@ jobs:
               with:
                   node-version: "20.18.0"
                   cache: npm
-                  cache-dependency-path: dev_lab/frontend/package-lock.json
+                  cache-dependency-path: frontend/package-lock.json
 
             - name: Install frontend dependencies
               run: npm install
-              working-directory: dev_lab/frontend
+              working-directory: frontend
 
             - name: Build frontend
               run: npm run build
-              working-directory: dev_lab/frontend
+              working-directory: frontend
 
             - name: Setup Node.js (Backend)
               uses: actions/setup-node@v4
               with:
                   node-version: "20.18.0"
                   cache: npm
-                  cache-dependency-path: dev_lab/backend/package-lock.json
+                  cache-dependency-path: backend/package-lock.json
 
             - name: Install backend dependencies
               run: npm install
-              working-directory: dev_lab/backend
+              working-directory: backend
 
             - name: Build backend
               run: npm run build
-              working-directory: dev_lab/backend
+              working-directory: backend
