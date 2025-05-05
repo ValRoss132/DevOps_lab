@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../config/db.config';
 import bcrypt from 'bcryptjs';
+import { error } from 'console';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -14,19 +15,20 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             res.status(400).json({ error: 'The nickname is already taken' });
             return
         }
-
+        
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await db.one(
             'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING id, name',
             [name, hashedPassword],
         );
-
+        
         // req.session.userId = newUser.id;
         res.status(201).json({
             message: 'Registration successful',
             user: newUser,
         });
     } catch (error) {
+        console.error('Error during registration:', error);
         res.status(500).json({ error: 'Error during registration' });
     }
 };
@@ -70,6 +72,7 @@ export const login = async (req: Request, res: Response) => {
         // });
         return
     } catch (error) {
+        console.error('Error during login:', error);
         res.status(500).json({ error: 'Error logging in' });
         return
     }
