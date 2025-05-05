@@ -35,13 +35,13 @@ resource "yandex_compute_instance" "docker_vm" {
   zone        = "ru-central1-a" // Зона размещение (регион)
 
   resources {
-    cores  = 4 // Количество виртуальных ядер 
-    memory = 4 // Объем ОП
+    cores  = 2 // Количество виртуальных ядер 
+    memory = 2 // Объем ОП
   }
 
   boot_disk {
     initialize_params {
-      image_id = "fd8vfvc6r3tl3k0igv6l" // ID образа для создание диска
+      image_id = "fd8vfvc6r3tl3k0igv6l" // ID образа для создания диска
     }
   }
 
