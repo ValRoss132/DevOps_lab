@@ -35,7 +35,7 @@ resource "yandex_compute_instance" "docker_vm" {
   zone        = "ru-central1-a" // Зона размещение (регион)
 
   resources {
-    cores  = 2 // Количество виртуальных ядер 
+    cores  = 2 // Количество виртуальных ядер
     memory = 2 // Объем ОП
   }
 
