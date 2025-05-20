@@ -83,11 +83,26 @@ jobs:
         run: npm run build
         working-directory: backend
 
+  paths-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
   docker-publish-backend:
     name: Build & Push Multi-Arch Docker Image (backend)
     runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'push' && github.event.commits.*.modified.* contains 'backend/'
+    needs: [build, paths-filter]
+    if: needs.paths-filter.outputs.backend == 'true'
 
     steps:
       - name: Checkout repository
@@ -102,23 +117,23 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push multi-arch image (backend)
         uses: docker/build-push-action@v5
         with:
-            context: ./backend
-            file: ./backend/Dockerfile
-            push: true
-            tags: valross132/devops-backend:latest
-            platforms: linux/amd64,linux/arm64
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: valross132/devops-backend:latest
+          platforms: linux/amd64,linux/arm64
 
   docker-publish-frontend:
     name: Build & Push Multi-Arch Docker Image (frontend)
     runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'push' && github.event.commits.*.modified.* contains 'frontend/'
+    needs: [build, paths-filter]
+    if: needs.paths-filter.outputs.frontend == 'true'
 
     steps:
       - name: Checkout repository
@@ -133,14 +148,14 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push multi-arch image (frontend)
         uses: docker/build-push-action@v5
         with:
-            context: ./frontend
-            file: ./frontend/Dockerfile
-            push: true
-            tags: valross132/devops-frontend:latest
-            platforms: linux/amd64,linux/arm64
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: valross132/devops-frontend:latest
+          platforms: linux/amd64,linux/arm64
