@@ -36,7 +36,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// /metrics endpoint for Prometheus
+// метрики для Прометеуса
 app.get('/metrics', async (req, res) => {
     res.set('Content-Type', client.register.contentType);
     res.end(await client.register.metrics());
