@@ -7,11 +7,40 @@ import routes from './routes';
 import { setupWebSockets } from './websocket';
 import session from 'express-session';
 import pgSession from 'connect-pg-simple';
+import client from 'prom-client';
 
 const app = express();
 const server = http.createServer(app);
 const port = config.port;
 const PgSession = pgSession(session);
+
+// Prometheus metrics setup
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics();
+
+const httpRequestCounter = new client.Counter({
+    name: 'http_requests_total',
+    help: 'Total number of HTTP requests',
+    labelNames: ['method', 'route', 'status_code'],
+});
+
+// Middleware to count requests
+app.use((req, res, next) => {
+    res.on('finish', () => {
+        httpRequestCounter.inc({
+            method: req.method,
+            route: req.route ? req.route.path : req.path,
+            status_code: res.statusCode,
+        });
+    });
+    next();
+});
+
+// /metrics endpoint for Prometheus
+app.get('/metrics', async (req, res) => {
+    res.set('Content-Type', client.register.contentType);
+    res.end(await client.register.metrics());
+});
 
 async function main() {
     app.use(
