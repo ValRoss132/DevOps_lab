@@ -93,6 +93,13 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Ensure full git history
+        run: git pull --unshallow || true
       - uses: dorny/paths-filter@v3
         id: filter
         with:
