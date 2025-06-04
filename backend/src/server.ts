@@ -53,6 +53,8 @@ async function main() {
                 'http://0.0.0.0:8080',
                 'http://172.20.10.13:5173',
                 'http://192.168.110.119:5173',
+                'http://62.84.124.124:31860',
+                'http://62.84.124.124:32000', // добавлен NodePort backend
             ],
             credentials: true,
         }),

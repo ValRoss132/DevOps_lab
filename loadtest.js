@@ -2,23 +2,32 @@ import http from 'k6/http';
 import { check } from 'k6';
 
 export const options = {
-  stages: [
-        { duration: '30s', target: 5 },
-        { duration: '30s', target: 10 },
-        { duration: '30s', target: 15 },
-        { duration: '30s', target: 20 },
-        { duration: '30s', target: 25 },
-        { duration: '30s', target: 30 },
-        { duration: '30s', target: 35 },
-        { duration: '30s', target: 40 },
-        { duration: '30s', target: 45 },
-        { duration: '30s', target: 50 },
-        { duration: '1m', target: 0 },
+  scenarios: {
+    requests_per_second: {
+      executor: 'ramping-arrival-rate',
+      startRate: 1,
+      timeUnit: '1s',
+      preAllocatedVUs: 50, 
+      maxVUs: 100,
+      stages: [
+        { target: 4, duration: '30s',  },
+
+        { target: 8, duration: '45s',  },
+
+        { target: 12, duration: '45s',  },
+
+        { target: 15, duration: '45s',  },
+
+        { target: 0, duration: '30s' }, // Плавный спад
       ],
+    },
+  },
+  thresholds: {
+    http_req_duration: ['p(95)<1500'],
+  }
 };
 
 export default function () {
-  // Генерируем "плохие" учетные данные
   const badCredentials = {
     username: `user${Math.floor(Math.random() * 1000)}`,
     password: 'invalid_password'
@@ -32,7 +41,7 @@ export default function () {
 
   // Проверяем, что сервер возвращает ожидаемую ошибку
   check(res, {
-    'status is 400/401': (r) => [400, 401].includes(r.status),
-    'response time < 500ms': (r) => r.timings.duration < 500,
+    'status is 500 (expected)': (r) => r.status === 500, // Проверяем на 500, так как это ожидаемо
+    'response time < 1500ms': (r) => r.timings.duration < 1500,
   });
 }

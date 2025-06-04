@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
     name: k6-loadtest
+    namespace: default
 spec:
     template:
         spec:
