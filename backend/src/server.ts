@@ -45,17 +45,7 @@ app.get('/metrics', async (req, res) => {
 async function main() {
     app.use(
         cors({
-            origin: [
-                'http://localhost:5173',
-                'http://localhost:8080',
-                'http://192.168.3.62:5173',
-                'http://192.168.3.62:8080',
-                'http://0.0.0.0:8080',
-                'http://172.20.10.13:5173',
-                'http://192.168.110.119:5173',
-                'http://62.84.124.124:31860',
-                'http://62.84.124.124:32000', // добавлен NodePort backend
-            ],
+            origin: true, // разрешает любой origin для CORS
             credentials: true,
         }),
     );
