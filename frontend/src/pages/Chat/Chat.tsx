@@ -14,7 +14,8 @@ interface Message {
     timestamp: Date;
 }
 
-const SERVER_URL = `http://${window.location.hostname}:4200`;
+// Используем порт 32000 для обращения к backend через NodePort
+const SERVER_URL = `http://${window.location.hostname}:32000`;
 const socket: Socket = io(SERVER_URL, {
     transports: ['websocket', 'polling'],
     reconnectionAttempts: 5,

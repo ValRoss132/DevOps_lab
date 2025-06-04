@@ -13,7 +13,8 @@ interface UserState {
     deleteUser: () => Promise<string> 
 }
 
-const API_URL = `http://${window.location.hostname}:4200/api/users`;
+// Используем порт 32000 для обращения к backend через NodePort
+const API_URL = `http://${window.location.hostname}:32000/api/users`;
 
 export const useUserStore = create<UserState>((set, get) => ({
     user: null,

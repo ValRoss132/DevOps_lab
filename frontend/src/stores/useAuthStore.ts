@@ -10,7 +10,8 @@ interface AuthState {
     checkAuth: () => Promise<boolean>;
 }
 
-const API_URL = `http://${window.location.hostname}:4200/api/`;
+// Используем порт 32000 для обращения к backend через NodePort
+const API_URL = `http://${window.location.hostname}:32000/api/`;
 
 export const useAuthStore = create<AuthState>(() => ({
     register: async (name, password) => {
