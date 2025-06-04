@@ -8,7 +8,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('../stores/useUserStore');
 
-const URL = 'http://localhost:4200/api';
+const URL = 'http://localhost:32000/api';
 
 const mockResponse = (status: number, url: string, user = {}) => {
     return {

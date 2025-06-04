@@ -27,7 +27,7 @@ describe('useUserStore', () => {
             statusText: 'OK',
             headers: {},
             config: {
-                url: 'http://localhost:4200/api/users/1',
+                url: 'http://localhost:32000/api/users/1',
             },
         });
 
@@ -37,7 +37,7 @@ describe('useUserStore', () => {
         });
 
         expect(mockedAxios.put).toHaveBeenCalledWith(
-            'http://localhost:4200/api/users/1',
+            'http://localhost:32000/api/users/1',
             { name: 'cba' },
             { withCredentials: true },
         );
@@ -68,7 +68,7 @@ describe('useUserStore', () => {
         });
 
         expect(mockedAxios.put).toHaveBeenCalledWith(
-            'http://localhost:4200/api/users/1',
+            'http://localhost:32000/api/users/1',
             { name: 'cba' },
             { withCredentials: true },
         );
