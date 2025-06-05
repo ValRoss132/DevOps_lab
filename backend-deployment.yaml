@@ -18,6 +18,22 @@ spec:
                   image: valross132/devops-backend:latest
                   ports:
                       - containerPort: 3000
+                        name: http
+                  env:
+                      - name: DATABASE_HOST
+                        value: db
+                      - name: DATABASE_PORT
+                        value: "15432"
+                      - name: DATABASE_NAME
+                        value: devopsdb
+                      - name: DATABASE_USER
+                        value: valross132
+                      - name: DATABASE_PASSWORD
+                        value: "712132666"
+                      - name: POD_NAME
+                        valueFrom:
+                            fieldRef:
+                                fieldPath: metadata.name
                   resources:
                       requests:
                           cpu: "100m"

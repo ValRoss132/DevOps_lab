@@ -3,12 +3,29 @@ kind: ServiceMonitor
 metadata:
     name: backend-servicemonitor
     labels:
-        release: prometheus # ("prometheus" или "kube-prometheus-stack")
+        release: prometheus # ("prometheus" или "kube-prometheus-stack" - используйте то, что у вас)
 spec:
     selector:
         matchLabels:
-            app: backend
+            app: backend # Убедитесь, что это лейбл вашего Service, который выбирает поды
     endpoints:
-        - port: http
+        - port: http # Порт, который вы скрапите с вашего Service
           path: /metrics
           interval: 10s
+          # --- Добавляем или обновляем эту секцию ---
+          relabelings:
+              # Добавляем лейбл 'pod' из метаданных Kubernetes
+              - sourceLabels: [__meta_kubernetes_pod_name]
+                targetLabel: pod
+              # Если вы хотите, чтобы метрики были доступны только для 'app: backend'
+              # и ваш Service тоже имеет лейбл 'app: backend', то это должно работать
+              - sourceLabels: [__meta_kubernetes_service_label_app]
+                regex: backend
+                action: keep
+              # Дополнительно: Переопределить 'instance', если нужно сделать его уникальным для каждого пода
+              # По умолчанию 'instance' обычно становится 'IP:Port' пода.
+              # Если вы хотите, чтобы 'instance' тоже был именем пода:
+              - sourceLabels: [__meta_kubernetes_pod_name]
+                targetLabel: instance
+                replacement: "$1" # Используем само имя пода в качестве instance
+                action: replace

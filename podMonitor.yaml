@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+    name: backend-podmonitor # Уникальное имя для PodMonitor
+    namespace: default # Вставьте ваш namespace (например, 'default')
+    labels:
+        release: prometheus # Этот лейбл должен быть таким же, как в вашем Prometheus Operator (обычно 'prometheus' или 'kube-prometheus-stack')
+spec:
+    selector:
+        matchLabels:
+            app: backend # ЭТОТ ЛЕЙБЛ ДОЛЖЕН БЫТЬ ПРИСУТСТВОВАТЬ НА ВАШИХ POD'ах бэкенда.
+                # Обычно это тот же лейбл, который используется в spec.selector.matchLabels вашего Deployment.
+    podMetricsEndpoints:
+        - port:
+              http # Имя порта, которое вы используете в контейнере вашего пода для метрик.
+              # Это должно быть имя порта, определенное в вашем Deployment/Pod.
+              # Например: ports: - containerPort: 8080 name: http
+          path: /metrics # Путь к эндпоинту метрик (у вас уже /metrics)
+          interval: 10s # Интервал скрапинга
+          relabelings:
+              - sourceLabels: [__meta_kubernetes_pod_name]
+                targetLabel: pod
+                action: replace
+              # Опционально: если вы хотите, чтобы 'instance' тоже был именем пода
+              - sourceLabels: [__meta_kubernetes_pod_name]
+                targetLabel: instance
+                action: replace
+          # Опционально: Если у вашего пода есть лейбл 'job' (как у вас 'job="nodejs-backend"'),
+          # и вы хотите его передать, но чаще это job_name определяется в PodMonitor.
+          # - sourceLabels: [__meta_kubernetes_pod_label_job]
+          #   targetLabel: job
+          #   action: replace
