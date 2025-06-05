@@ -18,10 +18,12 @@ const PgSession = pgSession(session);
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics();
 
+const podName = process.env.POD_NAME || 'unknown';
+
 const httpRequestCounter = new client.Counter({
     name: 'http_requests_total',
     help: 'Total number of HTTP requests',
-    labelNames: ['method', 'route', 'status_code'],
+    labelNames: ['method', 'route', 'status_code', 'pod'],
 });
 
 // Middleware to count requests
@@ -31,6 +33,7 @@ app.use((req, res, next) => {
             method: req.method,
             route: req.route ? req.route.path : req.path,
             status_code: res.statusCode,
+            pod: podName,
         });
     });
     next();
