@@ -10,13 +10,13 @@ export const options = {
       preAllocatedVUs: 50, 
       maxVUs: 100,
       stages: [
-        { target: 4, duration: '30s',  },
+        { target: 4, duration: '45s',  },
 
-        { target: 8, duration: '45s',  },
+        { target: 8, duration: '60s',  },
 
-        { target: 12, duration: '45s',  },
+        { target: 12, duration: '60s',  },
 
-        { target: 15, duration: '45s',  },
+        { target: 15, duration: '90s',  },
 
         { target: 0, duration: '30s' }, // Плавный спад
       ],
