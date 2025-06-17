@@ -148,6 +148,20 @@ const Auth: React.FC = () => {
 
             console.log('Updated lines:', lines);
         }
+
+        const currentLine = lines[lines.length - 1];
+
+        if (isLoading) {
+            setLines((prev) => [
+                ...prev,
+                { type: 'output', content: 'Loading...', withLoader: true },
+            ]);
+        } else if (!isLoading && currentLine?.content === 'Enter your password:') {
+            setLines((prev) => [
+                ...prev,
+                { type: 'output', content: 'Access granted!' },
+            ]);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,7 +195,7 @@ const Auth: React.FC = () => {
                                 <>
                                     <span>{line.content}&nbsp;</span>
                                     {line.withLoader && (
-                                        <Loader active={true} speed={100} />
+                                        <Loader active={true} speed={100} data-testid="loader" />
                                     )}
                                 </>
                             )}
@@ -214,7 +228,7 @@ const Auth: React.FC = () => {
                         </div>
                     )}
 
-                    {isLoading && <Loader active={true} speed={100} />}
+                    {isLoading && <Loader active={true} speed={100} data-testid="loader" />}
 
                     <div ref={endRef} />
                 </div>
