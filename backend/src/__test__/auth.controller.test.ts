@@ -54,13 +54,13 @@ describe('auth controllers', () => {
             });
         });
 
-        test('reject existing user', async () => {
-            const req = mockRequest({ name: 'test', password: '123456' });
+        test('should return 400 if the username is already taken', async () => {
+            const req = mockRequest({ name: 'existingUser', password: '123' });
             const res = mockResponse();
 
             (db.oneOrNone as jest.Mock).mockResolvedValue({
                 id: 1,
-                name: 'test',
+                name: 'existingUser',
             });
 
             await register(req, res);
@@ -109,8 +109,8 @@ describe('auth controllers', () => {
             });
         });
 
-        test('user not found', async () => {
-            const req = mockRequest({ name: 'test', password: '123' });
+        test('should return 400 if the user is not found', async () => {
+            const req = mockRequest({ name: 'nonexistent', password: '123' });
             const res = mockResponse();
 
             (db.oneOrNone as jest.Mock).mockResolvedValue(null);
@@ -121,14 +121,17 @@ describe('auth controllers', () => {
             expect(res.json).toHaveBeenCalledWith({ error: 'User not found' });
         });
 
-        test('password is incorrect', async () => {
-            const req = mockRequest({ name: 'test', password: 'wrong' });
+        test('should return 400 if the password is incorrect', async () => {
+            const req = mockRequest(
+                { name: 'testuser', password: 'wrongpassword' },
+                { save: jest.fn((cb) => cb()) },
+            );
             const res = mockResponse();
 
             (db.oneOrNone as jest.Mock).mockResolvedValue({
                 id: 1,
-                name: 'test',
-                password: 'hashed',
+                name: 'testuser',
+                password: 'hashed-password',
             });
             (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 

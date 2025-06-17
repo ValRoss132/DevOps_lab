@@ -22,7 +22,7 @@ describe('', () => {
 
         expect(mockDb.one).toHaveBeenCalledWith(
             'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *',
-            ['Alice', 'secret']
+            ['Alice', 'secret'],
         );
         expect(result).toEqual(mockUser);
     });
@@ -35,7 +35,7 @@ describe('', () => {
 
         expect(mockDb.one).toHaveBeenCalledWith(
             'SELECT * FROM users WHERE id = $1',
-            [2]
+            [2],
         );
         expect(result).toEqual(mockUser);
     });
@@ -48,7 +48,7 @@ describe('', () => {
 
         expect(mockDb.one).toHaveBeenCalledWith(
             'UPDATE users SET name = $2 WHERE id = $1 RETURNING *',
-            [3, 'Charlie']
+            [3, 'Charlie'],
         );
         expect(result).toEqual(updatedUser);
     });
@@ -61,8 +61,8 @@ describe('', () => {
         expect(mockDb.result).toHaveBeenCalledWith(
             'DELETE FROM users WHERE id = $1',
             [4],
-            expect.any(Function)
+            expect.any(Function),
         );
         expect(result).toBe(1);
     });
-})
+});
