@@ -113,7 +113,7 @@ const Chat: React.FC = () => {
                     ) : (
                         <span>
                             [<span className="text-red-300">not connected</span>
-                            ]
+                            ]{/* Explicit spacing added */}
                         </span>
                     )}
                 </div>
