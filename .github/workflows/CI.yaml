@@ -62,6 +62,10 @@ jobs:
               env:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
                   SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+              with:
+                  args: >
+                    -Dsonar.projectKey=my_project_key
+                    -Dsonar.sources=src
 
             - name: SonarQube Quality Gate
               uses: SonarSource/sonarqube-quality-gate-action@v1
