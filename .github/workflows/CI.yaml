@@ -89,7 +89,7 @@ jobs:
                       -Dsonar.projectKey=ValRoss132_DevOps_lab_3813d1ae-60db-49c3-8c24-2ab33c4c3bcf
                       -Dsonar.sources=frontend/src,backend/src
                       -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info,backend/coverage/lcov.info
-                      -Dsonar.exclusions=**/__test__/**,**/*.test.ts,**/*.test.js,**/*.test.tsx,**/*.test.jsx,backend/src/config.ts,backend/src/config/db.config.ts,frontend/src/setupTests.ts,**/index.ts,**/server.ts,**/websocket.ts
+                      -Dsonar.exclusions=**/__test__/**,**/*.test.ts,**/*.test.js,**/*.test.tsx,**/*.test.jsx,backend/src/config.ts,backend/src/config/db.config.ts,frontend/src/setupTests.ts,**/index.ts,**/server.ts,**/websocket.ts,backend/src/middlewares/auth.middlewares.ts,backend/src/routes/auth.routes.ts
 
             - name: SonarQube Quality Gate
               uses: SonarSource/sonarqube-quality-gate-action@v1

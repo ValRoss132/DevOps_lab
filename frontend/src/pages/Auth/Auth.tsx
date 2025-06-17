@@ -156,7 +156,10 @@ const Auth: React.FC = () => {
                 ...prev,
                 { type: 'output', content: 'Loading...', withLoader: true },
             ]);
-        } else if (!isLoading && currentLine?.content === 'Enter your password:') {
+        } else if (
+            !isLoading &&
+            currentLine?.content === 'Enter your password:'
+        ) {
             setLines((prev) => [
                 ...prev,
                 { type: 'output', content: 'Access granted!' },
@@ -195,7 +198,11 @@ const Auth: React.FC = () => {
                                 <>
                                     <span>{line.content}&nbsp;</span>
                                     {line.withLoader && (
-                                        <Loader active={true} speed={100} data-testid="loader" />
+                                        <Loader
+                                            active={true}
+                                            speed={100}
+                                            data-testid="loader"
+                                        />
                                     )}
                                 </>
                             )}
@@ -228,7 +235,13 @@ const Auth: React.FC = () => {
                         </div>
                     )}
 
-                    {isLoading && <Loader active={true} speed={100} data-testid="loader" />}
+                    {isLoading && (
+                        <Loader
+                            active={true}
+                            speed={100}
+                            data-testid="loader"
+                        />
+                    )}
 
                     <div ref={endRef} />
                 </div>

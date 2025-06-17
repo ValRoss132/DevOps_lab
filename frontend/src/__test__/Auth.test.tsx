@@ -50,6 +50,8 @@ describe('Auth Component', () => {
         fireEvent.change(input, { target: { value: 'testuser' } });
         fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
-        expect(await screen.findByText('Enter your password:')).toBeInTheDocument();
+        expect(
+            await screen.findByText('Enter your password:'),
+        ).toBeInTheDocument();
     });
 });
