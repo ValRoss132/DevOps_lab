@@ -1,4 +1,4 @@
-name: CI
+name: ${{ github.event.head_commit.message }}
 
 on:
     push:
@@ -245,7 +245,7 @@ jobs:
                       STATUS="❌ CI Workflow завершен с ошибками."
                   fi
 
-                  STEPS="\n- Test Frontend: ${{ steps.test_frontend.outcome == 'success' ? '✅' : '❌' }}\n- Test Backend: ${{ steps.test_backend.outcome == 'success' ? '✅' : '❌' }}\n- SonarQube Scan: ${{ steps.sonar_scan.outcome == 'success' ? '✅' : '❌' }}\n- SonarQube Quality Gate: ${{ steps.sonar_quality_gate.outcome == 'success' ? '✅' : '❌' }}"
+                  STEPS="\n- Test Frontend: ${{ steps.test_frontend.outcome == 'success' && '✅' || '❌' }}\n- Test Backend: ${{ steps.test_backend.outcome == 'success' && '✅' || '❌' }}\n- SonarQube Scan: ${{ steps.sonar_scan.outcome == 'success' && '✅' || '❌' }}\n- SonarQube Quality Gate: ${{ steps.sonar_quality_gate.outcome == 'success' && '✅' || '❌' }}"
 
                   curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
                   -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
