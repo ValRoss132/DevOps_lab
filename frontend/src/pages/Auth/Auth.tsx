@@ -70,7 +70,7 @@ const Auth: React.FC = () => {
         if (e.key === 'Enter') {
             const currentLine = lines[lines.length - 1];
 
-            if (currentLine.content === 'Enter your nickname:') {
+            if (currentLine && currentLine.content === 'Enter your nickname:') {
                 // Обработка никнейма
                 setLines((prev) => [
                     ...prev,
@@ -83,7 +83,18 @@ const Auth: React.FC = () => {
                 // Здесь можно добавить проверку никнейма
                 // Для примера просто продолжаем
                 setIsLoading(false);
-            } else if (currentLine.content === 'Enter your password:') {
+            } else if (
+                currentLine &&
+                currentLine.content === 'Enter your password:'
+            ) {
+                // Обработка пароля
+                setLines((prev) => [
+                    ...prev,
+                    { type: 'input', content: currentInput },
+                    { type: 'output', content: 'Access granted!' },
+                ]);
+                setCurrentInput('');
+            } else if (currentLine?.content === 'Enter your password:') {
                 // Обработка пароля
                 setLines((prev) => [
                     ...prev,
@@ -124,14 +135,18 @@ const Auth: React.FC = () => {
                         navigate('/chat');
                     }, 5000);
                 }
-            } else if (currentLine.type === 'error') {
+            } else if (currentLine && currentLine.type === 'error') {
                 // После ошибки снова запрашиваем никнейм
                 setLines((prev) => [
                     ...prev,
                     { type: 'output', content: 'Enter your nickname:' },
                 ]);
                 setCurrentInput('');
+            } else if (!currentLine) {
+                console.warn('No current line to process.');
             }
+
+            console.log('Updated lines:', lines);
         }
     };
 

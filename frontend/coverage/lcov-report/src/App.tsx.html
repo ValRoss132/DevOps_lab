@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/config.ts</title>
+    <title>Code coverage report for src/App.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">src</a> config.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">src</a> App.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>4/4</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>7/14</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Functions</span>
+                <span class="quiet">Branches</span>
                 <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>1/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -80,11 +80,21 @@
 <a name='L15'></a><a href='#L15'>15</a>
 <a name='L16'></a><a href='#L16'>16</a>
 <a name='L17'></a><a href='#L17'>17</a>
-<a name='L18'></a><a href='#L18'>18</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -97,23 +107,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import dotenv from 'dotenv';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
 &nbsp;
-dotenv.config();
+import Chat from './pages/Chat';
+import Registration from './pages/Registration';
+import Auth from './pages/Auth';
 &nbsp;
-const config = {
-    port: process.env.PORT || <span class="branch-1 cbranch-no" title="branch not covered" >3000,</span>
-    database: {
-        host: process.env.DATABASE_HOST || <span class="branch-1 cbranch-no" title="branch not covered" >'db',</span>
-        port: Number(process.env.DATABASE_PORT) || <span class="branch-1 cbranch-no" title="branch not covered" >15432,</span>
-        name: process.env.DATABASE_NAME || <span class="branch-1 cbranch-no" title="branch not covered" >'database',</span>
-        user: process.env.DATABASE_USER || <span class="branch-1 cbranch-no" title="branch not covered" >'postgres',</span>
-        password: process.env.DATABASE_PASSWORD || <span class="branch-1 cbranch-no" title="branch not covered" >'password',</span>
-    },
-    nodeEnv: process.env.NODE_ENV || <span class="branch-1 cbranch-no" title="branch not covered" >'development',</span>
-};
+function App() {
+    return (
+        &lt;BrowserRouter&gt;
+            &lt;Routes&gt;
+                &lt;Route path="profile" element /&gt;
+                &lt;Route path="/auth" element={&lt;Auth /&gt;} /&gt;
+                &lt;Route path="/register" element={&lt;Registration /&gt;} /&gt;
+                &lt;Route path="/chat" element={&lt;Chat /&gt;} /&gt;
+                &lt;Route path="*" element={&lt;Navigate to="/auth" replace /&gt;} /&gt;
+            &lt;/Routes&gt;
+        &lt;/BrowserRouter&gt;
+    );
+}
 &nbsp;
-export default config;
+export default App;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -121,7 +136,7 @@ export default config;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-17T16:08:19.387Z
+                at 2025-06-17T16:25:09.336Z
             </div>
         <script src="../prettify.js"></script>
         <script>
