@@ -1,176 +1,198 @@
 name: CI
 
 on:
-  push:
-    paths:
-      - '**'
+    push:
+        paths:
+            - "**"
 
 jobs:
-  test:
-    name: Test (Frontend + Backend)
-    runs-on: ubuntu-latest
+    test:
+        name: Test (Frontend + Backend)
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: Setup Node.js (Frontend)
-        uses: actions/setup-node@v4
-        with:
-            node-version: "20.18.0"
-            cache: npm
-            cache-dependency-path: frontend/package-lock.json
+            - name: Setup Node.js (Frontend)
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20.18.0"
+                  cache: npm
+                  cache-dependency-path: frontend/package-lock.json
 
-      - name: Install frontend dependencies
-        run: npm install
-        working-directory: frontend
+            - name: Install frontend dependencies
+              run: npm install
+              working-directory: frontend
 
-      - name: Test frontend
-        run: npm run test
-        working-directory: frontend
+            - name: Test frontend
+              run: npm run test
+              working-directory: frontend
 
-      - name: Setup Node.js (Backend)
-        uses: actions/setup-node@v4
-        with:
-            node-version: "20.18.0"
-            cache: npm
-            cache-dependency-path: backend/package-lock.json
+            - name: Setup Node.js (Backend)
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20.18.0"
+                  cache: npm
+                  cache-dependency-path: backend/package-lock.json
 
-      - name: Install backend dependencies
-        run: npm install
-        working-directory: backend
+            - name: Install backend dependencies
+              run: npm install
+              working-directory: backend
 
-      - name: Test backend
-        run: npm run test
-        working-directory: backend
+            - name: Test backend
+              run: npm run test
+              working-directory: backend
 
-  build:
-    name: Build (Frontend + Backend)
-    runs-on: ubuntu-latest
-    needs: test
+    build:
+        name: Build (Frontend + Backend)
+        runs-on: ubuntu-latest
+        needs: test
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: Setup Node.js (Frontend)
-        uses: actions/setup-node@v4
-        with:
-            node-version: "20.18.0"
-            cache: npm
-            cache-dependency-path: frontend/package-lock.json
+            - name: Setup Node.js (Frontend)
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20.18.0"
+                  cache: npm
+                  cache-dependency-path: frontend/package-lock.json
 
-      - name: Install frontend dependencies
-        run: npm install
-        working-directory: frontend
+            - name: Install frontend dependencies
+              run: npm install
+              working-directory: frontend
 
-      - name: Build frontend
-        run: npm run build
-        working-directory: frontend
+            - name: Build frontend
+              run: npm run build
+              working-directory: frontend
 
-      - name: Setup Node.js (Backend)
-        uses: actions/setup-node@v4
-        with:
-            node-version: "20.18.0"
-            cache: npm
-            cache-dependency-path: backend/package-lock.json
+            - name: Setup Node.js (Backend)
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20.18.0"
+                  cache: npm
+                  cache-dependency-path: backend/package-lock.json
 
-      - name: Install backend dependencies
-        run: npm install
-        working-directory: backend
+            - name: Install backend dependencies
+              run: npm install
+              working-directory: backend
 
-      - name: Build backend
-        run: npm run build
-        working-directory: backend
+            - name: Build backend
+              run: npm run build
+              working-directory: backend
 
-  paths-filter:
-    runs-on: ubuntu-latest
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Ensure full git history
-        run: git pull --unshallow || true
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            backend:
-              - 'backend/**'
-            frontend:
-              - 'frontend/**'
+    paths-filter:
+        runs-on: ubuntu-latest
+        outputs:
+            backend: ${{ steps.filter.outputs.backend }}
+            frontend: ${{ steps.filter.outputs.frontend }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  persist-credentials: false
+            - name: Ensure full git history
+              run: git pull --unshallow || true
+            - uses: dorny/paths-filter@v3
+              id: filter
+              with:
+                  filters: |
+                      backend:
+                        - 'backend/**'
+                      frontend:
+                        - 'frontend/**'
 
-  docker-publish-backend:
-    name: Build & Push Multi-Arch Docker Image (backend)
-    runs-on: ubuntu-latest
-    needs: [build, paths-filter]
-    if: needs.paths-filter.outputs.backend == 'true'
+    docker-publish-backend:
+        name: Build & Push Multi-Arch Docker Image (backend)
+        runs-on: ubuntu-latest
+        needs: [build, paths-filter]
+        if: needs.paths-filter.outputs.backend == 'true'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+            - name: Login to DockerHub
+              uses: docker/login-action@v3
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push multi-arch image (backend)
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: true
-          tags: valross132/devops-backend:latest
-          platforms: linux/amd64,linux/arm64
+            - name: Build and push multi-arch image (backend)
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./backend
+                  file: ./backend/Dockerfile
+                  push: true
+                  tags: valross132/devops-backend:latest
+                  platforms: linux/amd64,linux/arm64
 
-  docker-publish-frontend:
-    name: Build & Push Multi-Arch Docker Image (frontend)
-    runs-on: ubuntu-latest
-    needs: [build, paths-filter]
-    if: needs.paths-filter.outputs.frontend == 'true'
+    docker-publish-frontend:
+        name: Build & Push Multi-Arch Docker Image (frontend)
+        runs-on: ubuntu-latest
+        needs: [build, paths-filter]
+        if: needs.paths-filter.outputs.frontend == 'true'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+            - name: Login to DockerHub
+              uses: docker/login-action@v3
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push multi-arch image (frontend)
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: valross132/devops-frontend:latest
-          platforms: linux/amd64,linux/arm64
+            - name: Build and push multi-arch image (frontend)
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./frontend
+                  file: ./frontend/Dockerfile
+                  push: true
+                  tags: valross132/devops-frontend:latest
+                  platforms: linux/amd64,linux/arm64
+
+    sonar:
+        name: SonarQube Analysis
+        runs-on: ubuntu-latest
+        needs: test
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: SonarQube Scanner
+              env:
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              run: |
+                  npm install -g sonarqube-scanner
+                  sonarqube-scanner \
+                    -Dsonar.projectKey=ValRoss132_DevOps_lab_3813d1ae-60db-49c3-8c24-2ab33c4c3bcf \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://51.250.77.139:31000 \
+                    -Dsonar.login=${{ secrets.SONAR_TOKEN }}
