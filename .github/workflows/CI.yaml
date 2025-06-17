@@ -245,7 +245,7 @@ jobs:
                       STATUS="❌ CI Workflow завершен с ошибками."
                   fi
 
-                  STEPS="\n- Test Frontend: ${{ steps.test_frontend.outcome == 'success' && '✅' || '❌' }}\n- Test Backend: ${{ steps.test_backend.outcome == 'success' && '✅' || '❌' }}\n- SonarQube Scan: ${{ steps.sonar_scan.outcome == 'success' && '✅' || '❌' }}\n- SonarQube Quality Gate: ${{ steps.sonar_quality_gate.outcome == 'success' && '✅' || '❌' }}"
+                  STEPS="\n- Test Frontend: ${{ needs.test.outputs.test_frontend_outcome == 'success' && '✅' || '❌' }}\n- Test Backend: ${{ needs.test.outputs.test_backend_outcome == 'success' && '✅' || '❌' }}\n- Code Analysis: ${{ needs.analyze.outputs.sonar_scan_outcome == 'success' && '✅' || '❌' }}\n- Frontend Build: ${{ needs.build.outputs.frontend_build_outcome == 'success' && '✅' || '❌' }}\n- Backend Build: ${{ needs.build.outputs.backend_build_outcome == 'success' && '✅' || '❌' }}\n- DockerHub Push: ${{ needs.docker.outputs.docker_push_outcome == 'success' && '✅' || '❌' }}"
 
                   curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
                   -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
