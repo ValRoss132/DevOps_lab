@@ -30,6 +30,7 @@ jobs:
             - name: Test frontend
               run: npm run test
               working-directory: frontend
+              id: test_frontend
 
             - name: Setup Node.js (Backend)
               uses: actions/setup-node@v4
@@ -45,6 +46,7 @@ jobs:
             - name: Test backend
               run: npm run test
               working-directory: backend
+              id: test_backend
 
     analyze:
         name: Analyze code quality
@@ -90,6 +92,7 @@ jobs:
                       -Dsonar.sources=frontend/src,backend/src
                       -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info,backend/coverage/lcov.info
                       -Dsonar.exclusions=**/__test__/**,**/*.test.ts,**/*.test.js,**/*.test.tsx,**/*.test.jsx,backend/src/config.ts,backend/src/config/db.config.ts,frontend/src/setupTests.ts,**/index.ts,**/server.ts,**/websocket.ts,backend/src/middlewares/auth.middlewares.ts,backend/src/routes/auth.routes.ts
+              id: sonar_scan
 
             - name: SonarQube Quality Gate
               uses: SonarSource/sonarqube-quality-gate-action@v1
@@ -97,6 +100,7 @@ jobs:
               env:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
               continue-on-error: false
+              id: sonar_quality_gate
 
     build:
         name: Build (Frontend + Backend)
@@ -234,6 +238,16 @@ jobs:
         steps:
             - name: Send Telegram Notification
               run: |
+                  STATUS=""
+                  if [[ ${{ job.status }} == 'success' ]]; then
+                      STATUS="✅ CI Workflow завершен успешно."
+                  else
+                      STATUS="❌ CI Workflow завершен с ошибками."
+                  fi
+
+                  STEPS="\n- Test Frontend: ${{ steps.test_frontend.outcome == 'success' ? '✅' : '❌' }}\n- Test Backend: ${{ steps.test_backend.outcome == 'success' ? '✅' : '❌' }}\n- SonarQube Scan: ${{ steps.sonar_scan.outcome == 'success' ? '✅' : '❌' }}\n- SonarQube Quality Gate: ${{ steps.sonar_quality_gate.outcome == 'success' ? '✅' : '❌' }}"
+
                   curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
                   -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-                  -d text="CI Workflow completed with status: ${{ job.status }}"
+                  -d text="${STATUS}\n${STEPS}\nСсылка на GitHub Actions: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              if: always()
