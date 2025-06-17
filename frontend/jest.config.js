@@ -1,5 +1,3 @@
-
-
 export default {
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
@@ -16,5 +14,8 @@ export default {
     transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',
     },
+    collectCoverage: true,
+    coverageDirectory: 'coverage',
+    coverageReporters: ['lcov', 'text'],
 };
 
