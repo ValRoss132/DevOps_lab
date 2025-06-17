@@ -64,8 +64,8 @@ jobs:
                   SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
               with:
                   args: >
-                    -Dsonar.projectKey=my_project_key
-                    -Dsonar.sources=src
+                      -Dsonar.projectKey=ValRoss132_DevOps_lab_3813d1ae-60db-49c3-8c24-2ab33c4c3bcf
+                      -Dsonar.sources=src
 
             - name: SonarQube Quality Gate
               uses: SonarSource/sonarqube-quality-gate-action@v1
