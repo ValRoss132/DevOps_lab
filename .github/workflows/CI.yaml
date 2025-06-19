@@ -239,57 +239,77 @@ jobs:
             - name: Send Telegram Notification
               run: |
                   STATUS=""
-                  if [[ ${{ job.status }} == 'success' ]]; then
-                      STATUS="✅ CI Workflow завершен успешно."
-                  else
-                      STATUS="❌ CI Workflow завершен с ошибками."
+
+                  # Проверяем успешность обязательных этапов
+                  REQUIRED_SUCCESS=true
+                  if [[ "${{ needs.test.result }}" != 'success' ]]; then
+                    REQUIRED_SUCCESS=false
+                  fi
+                  if [[ "${{ needs.analyze.result }}" != 'success' ]]; then
+                    REQUIRED_SUCCESS=false
+                  fi
+                  if [[ "${{ needs.build.result }}" != 'success' ]]; then
+                    REQUIRED_SUCCESS=false
                   fi
 
-                  # Формируем сообщение с использованием переменных окружения для корректных переносов строк
+                  # Проверяем успешность деплоя, если он запускался
+                  if [[ "${{ needs.deploy.result }}" != 'skipped' && "${{ needs.deploy.result }}" != 'success' ]]; then
+                    REQUIRED_SUCCESS=false
+                  fi
+
+                  # Определяем общий статус
+                  if [[ "$REQUIRED_SUCCESS" == "true" ]]; then
+                    STATUS="✅ CI Workflow успешно завершен"
+                  else
+                    STATUS="❌ CI Workflow завершен с ошибками"
+                  fi
+
+                  # Формируем детальный отчет
                   STEPS=""
-                  STEPS+=$'\n- Test Frontend: '
+                  STEPS+=$'\n- Test Frontend/Backend: '
                   if [[ "${{ needs.test.result }}" == 'success' ]]; then
                     STEPS+='✅'
                   else
                     STEPS+='❌'
                   fi
-                  STEPS+=$'\n- Test Backend: '
-                  if [[ "${{ needs.test.result }}" == 'success' ]]; then
-                    STEPS+='✅'
-                  else
-                    STEPS+='❌'
-                  fi
+
                   STEPS+=$'\n- Code Analysis: '
                   if [[ "${{ needs.analyze.result }}" == 'success' ]]; then
                     STEPS+='✅'
                   else
                     STEPS+='❌'
                   fi
-                  STEPS+=$'\n- Frontend Build: '
+
+                  STEPS+=$'\n- Build Frontend/Backend: '
                   if [[ "${{ needs.build.result }}" == 'success' ]]; then
                     STEPS+='✅'
                   else
                     STEPS+='❌'
                   fi
-                  STEPS+=$'\n- Backend Build: '
-                  if [[ "${{ needs.build.result }}" == 'success' ]]; then
-                    STEPS+='✅'
-                  else
-                    STEPS+='❌'
-                  fi
-                  # DockerHub Push Backend
-                  if [[ "${{ needs.docker-publish-backend.result }}" == 'success' || "${{ needs.docker-publish-backend.result }}" == 'failure' ]]; then
-                    STEPS+=$'\n- DockerHub Push Backend: '
+
+                  # Проверяем Docker Push только если он запускался
+                  if [[ "${{ needs.docker-publish-backend.result }}" != '' && "${{ needs.docker-publish-backend.result }}" != 'skipped' ]]; then
+                    STEPS+=$'\n- Docker Push Backend: '
                     if [[ "${{ needs.docker-publish-backend.result }}" == 'success' ]]; then
                       STEPS+='✅'
                     else
                       STEPS+='❌'
                     fi
                   fi
-                  # DockerHub Push Frontend
-                  if [[ "${{ needs.docker-publish-frontend.result }}" == 'success' || "${{ needs.docker-publish-frontend.result }}" == 'failure' ]]; then
-                    STEPS+=$'\n- DockerHub Push Frontend: '
+
+                  if [[ "${{ needs.docker-publish-frontend.result }}" != '' && "${{ needs.docker-publish-frontend.result }}" != 'skipped' ]]; then
+                    STEPS+=$'\n- Docker Push Frontend: '
                     if [[ "${{ needs.docker-publish-frontend.result }}" == 'success' ]]; then
+                      STEPS+='✅'
+                    else
+                      STEPS+='❌'
+                    fi
+                  fi
+
+                  # Проверяем Deploy только если он запускался
+                  if [[ "${{ needs.deploy.result }}" != '' && "${{ needs.deploy.result }}" != 'skipped' ]]; then
+                    STEPS+=$'\n- Deploy: '
+                    if [[ "${{ needs.deploy.result }}" == 'success' ]]; then
                       STEPS+='✅'
                     else
                       STEPS+='❌'
