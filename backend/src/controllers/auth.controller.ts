@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../config/db.config';
 import bcrypt from 'bcryptjs';
-import { error } from 'console';
+
 
 export const register = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -22,7 +22,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             [name, hashedPassword],
         );
         
-        // req.session.userId = newUser.id;
         res.status(201).json({
             message: 'Registration successful',
             user: newUser,
@@ -66,10 +65,7 @@ export const login = async (req: Request, res: Response) => {
                 user: { id: user.id, name: user.name },
             });
         });
-        // res.json({
-        //     message: 'Login completed',
-        //     user: { id: user.id, name: user.name },
-        // });
+     
         return
     } catch (error) {
         console.error('Error during login:', error);
