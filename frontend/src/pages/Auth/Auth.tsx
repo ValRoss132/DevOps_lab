@@ -78,23 +78,10 @@ const Auth: React.FC = () => {
                     { type: 'output', content: 'Enter your password:' },
                 ]);
                 setCurrentInput('');
-                setIsLoading(true);
-
-                // Здесь можно добавить проверку никнейма
-                // Для примера просто продолжаем
-                setIsLoading(false);
             } else if (
                 currentLine &&
                 currentLine.content === 'Enter your password:'
             ) {
-                // Обработка пароля
-                setLines((prev) => [
-                    ...prev,
-                    { type: 'input', content: currentInput },
-                    { type: 'output', content: 'Access granted!' },
-                ]);
-                setCurrentInput('');
-            } else if (currentLine?.content === 'Enter your password:') {
                 // Обработка пароля
                 setLines((prev) => [
                     ...prev,
@@ -133,7 +120,7 @@ const Auth: React.FC = () => {
                     await checkAuth();
                     setTimeout(() => {
                         navigate('/chat');
-                    }, 5000);
+                    }, 2000);
                 }
             } else if (currentLine && currentLine.type === 'error') {
                 // После ошибки снова запрашиваем никнейм
@@ -142,28 +129,7 @@ const Auth: React.FC = () => {
                     { type: 'output', content: 'Enter your nickname:' },
                 ]);
                 setCurrentInput('');
-            } else if (!currentLine) {
-                console.warn('No current line to process.');
             }
-
-            console.log('Updated lines:', lines);
-        }
-
-        const currentLine = lines[lines.length - 1];
-
-        if (isLoading) {
-            setLines((prev) => [
-                ...prev,
-                { type: 'output', content: 'Loading...', withLoader: true },
-            ]);
-        } else if (
-            !isLoading &&
-            currentLine?.content === 'Enter your password:'
-        ) {
-            setLines((prev) => [
-                ...prev,
-                { type: 'output', content: 'Access granted!' },
-            ]);
         }
     };
 
