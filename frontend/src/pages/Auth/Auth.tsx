@@ -4,18 +4,20 @@ import Loader from '../../components/Loader/Loader';
 
 import { useAuthStore } from '../../stores/useAuthStore';
 import { useNavigate } from 'react-router-dom';
-// import { useUserStore } from '../../stores/useUserStore';
 
 interface TerminalLine {
+    id: string;
     type: 'input' | 'output' | 'error';
     content: string;
     isPassword?: boolean;
     withLoader?: boolean;
 }
 
+const generateId = () =>
+    `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
 const Auth: React.FC = () => {
     const { login, checkAuth } = useAuthStore();
-    // const { user } = useUserStore();
     const navigate = useNavigate();
     const [lines, setLines] = useState<TerminalLine[]>([]);
     const [currentInput, setCurrentInput] = useState('');
@@ -59,6 +61,7 @@ const Auth: React.FC = () => {
         if (!isCheckingAuth && lines.length === 0) {
             setLines([
                 {
+                    id: generateId(),
                     type: 'output',
                     content: 'Enter your nickname:',
                 },
@@ -74,8 +77,12 @@ const Auth: React.FC = () => {
                 // Обработка никнейма
                 setLines((prev) => [
                     ...prev,
-                    { type: 'input', content: currentInput },
-                    { type: 'output', content: 'Enter your password:' },
+                    { id: generateId(), type: 'input', content: currentInput },
+                    {
+                        id: generateId(),
+                        type: 'output',
+                        content: 'Enter your password:',
+                    },
                 ]);
                 setCurrentInput('');
             } else if (
@@ -86,6 +93,7 @@ const Auth: React.FC = () => {
                 setLines((prev) => [
                     ...prev,
                     {
+                        id: generateId(),
                         type: 'input',
                         content: '',
                         isPassword: true,
@@ -105,13 +113,22 @@ const Auth: React.FC = () => {
                 if (errorMessage) {
                     setLines((prev) => [
                         ...prev,
-                        { type: 'error', content: errorMessage },
-                        { type: 'output', content: 'Enter your nickname:' },
+                        {
+                            id: generateId(),
+                            type: 'error',
+                            content: errorMessage,
+                        },
+                        {
+                            id: generateId(),
+                            type: 'output',
+                            content: 'Enter your nickname:',
+                        },
                     ]);
                 } else {
                     setLines((prev) => [
                         ...prev,
                         {
+                            id: generateId(),
                             type: 'output',
                             content: 'Login successful! Redirecting to chat',
                             withLoader: true,
@@ -126,7 +143,11 @@ const Auth: React.FC = () => {
                 // После ошибки снова запрашиваем никнейм
                 setLines((prev) => [
                     ...prev,
-                    { type: 'output', content: 'Enter your nickname:' },
+                    {
+                        id: generateId(),
+                        type: 'output',
+                        content: 'Enter your nickname:',
+                    },
                 ]);
                 setCurrentInput('');
             }
@@ -152,9 +173,9 @@ const Auth: React.FC = () => {
 
             <div className="primary-container overflow-hidden flex">
                 <div className="flex-1 overflow-y-auto flex flex-col">
-                    {lines.map((line, index) => (
+                    {lines.map((line) => (
                         <div
-                            key={index}
+                            key={line.id}
                             className={`flex ${line.type === 'error' ? 'text-red-300' : 'text-white'}`}
                         >
                             <span className="mr-2">{'~ $'}&nbsp;</span>

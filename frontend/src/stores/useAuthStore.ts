@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { useUserStore } from './useUserStore';
-import { User } from './useUserStore';
+import { useUserStore, User } from './useUserStore';
 
 interface AuthState {
     register: (name: string, password: string) => Promise<string | null>;

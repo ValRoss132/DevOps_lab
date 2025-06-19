@@ -30,7 +30,7 @@ const Chat: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isConnected, setIsConnected] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [newName, setNewName] = useState(user?.name || '');
+    const [newName, setNewName] = useState(user?.name ?? '');
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const [currentInput, setCurrentInput] = useState(''); // Новое состояние для текущего ввода
 
