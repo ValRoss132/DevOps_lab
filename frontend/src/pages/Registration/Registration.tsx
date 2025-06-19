@@ -10,6 +10,9 @@ interface TerminalLine {
     withLoader?: boolean;
 }
 
+const generateId = () =>
+    `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
 const Registration: React.FC = () => {
     const { register } = useAuthStore();
     const navigate = useNavigate();
@@ -122,6 +125,14 @@ const Registration: React.FC = () => {
         setCurrentInput(e.target.value);
     };
 
+    const isHiddenInput =
+        lines[lines.length - 1]?.content === 'Enter a password:' ||
+        lines[lines.length - 1]?.content === 'Confirm password:';
+
+    const inputClassName = `text-white bg-transparent border-none focus:outline-none flex-1 ${
+        isHiddenInput ? 'opacity-0' : ''
+    }`;
+
     return (
         <div className="p-1 text-m terminal-container">
             <div className="flex items-center mb-4 gap-2">
@@ -137,9 +148,9 @@ const Registration: React.FC = () => {
 
             <div className="primary-container overflow-hidden flex">
                 <div className="flex-1 overflow-y-auto flex flex-col">
-                    {lines.map((line, index) => (
+                    {lines.map((line) => (
                         <div
-                            key={index}
+                            key={generateId()}
                             className={`flex ${line.type === 'error' ? 'text-red-300' : 'text-white'}`}
                         >
                             <span className="mr-2">{'~ $'}&nbsp;</span>
@@ -172,15 +183,7 @@ const Registration: React.FC = () => {
                                 value={currentInput}
                                 onChange={handleChange}
                                 onKeyDown={handleKeyDown}
-                                className={`text-white bg-transparent border-none focus:outline-none flex-1 ${
-                                    lines[lines.length - 1]?.content ===
-                                    'Enter a password:'
-                                        ? 'opacity-0'
-                                        : lines[lines.length - 1]?.content ===
-                                            'Confirm password:'
-                                          ? 'opacity-0'
-                                          : ''
-                                }`}
+                                className={inputClassName}
                                 disabled={isLoading}
                             />
                         </div>

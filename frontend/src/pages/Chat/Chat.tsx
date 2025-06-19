@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -13,6 +13,9 @@ interface Message {
     userName: string;
     timestamp: Date;
 }
+
+const generateId = () =>
+    `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
 // Используем порт 32000 для обращения к backend через NodePort
 const SERVER_URL = `http://${window.location.hostname}:32000`;
@@ -37,28 +40,36 @@ const Chat: React.FC = () => {
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
 
+    const handleNewMessageLogic = useCallback((newMessage: Message) => {
+        setMessages((prev) => {
+            // Уровень 1 (колбэк для setMessages)
+            // Проверяем, есть ли уже такое сообщение
+            if (!prev.some((msg) => msg.id === newMessage.id)) {
+                // Уровень 2 (колбэк для some)
+                return [...prev, newMessage]; // Уровень 3
+            }
+            return prev; // Уровень 3
+        });
+    }, []); // Зависимостей нет, так как логика самодостаточна
+
     useEffect(() => {
         setIsConnected(socket.connected);
 
-        socket.on('connect', () => setIsConnected(true));
-        socket.on('disconnect', () => setIsConnected(false));
+        const handleConnect = () => setIsConnected(true);
+        const handleDisconnect = () => setIsConnected(false);
 
-        socket.on('message', (newMessage: Message) => {
-            setMessages((prev) => {
-                // Проверяем, есть ли уже такое сообщение
-                if (!prev.some((msg) => msg.id === newMessage.id)) {
-                    return [...prev, newMessage];
-                }
-                return prev;
-            });
-        });
+        // Подписываемся на события, используя извлеченные обработчики
+        socket.on('connect', handleConnect);
+        socket.on('disconnect', handleDisconnect);
+        socket.on('message', handleNewMessageLogic); // Используем извлеченный обработчик
 
         return () => {
-            socket.off('connect');
-            socket.off('disconnect');
-            socket.off('message');
+            // Отписываемся от событий, используя те же ссылки на функции
+            socket.off('connect', handleConnect);
+            socket.off('disconnect', handleDisconnect);
+            socket.off('message', handleNewMessageLogic);
         };
-    }, []);
+    }, [handleNewMessageLogic]);
 
     useEffect(() => {
         const check = async () => {
@@ -181,8 +192,8 @@ const Chat: React.FC = () => {
                         </div>
                     ))}
                     <div className="chat-messages">
-                        {lines.map((line, index) => (
-                            <div key={index} className="message">
+                        {lines.map((line) => (
+                            <div key={generateId()} className="message">
                                 {line}
                             </div>
                         ))}

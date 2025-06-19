@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68% </span>
+                <span class="strong">70% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/75</span>
+                <span class='fraction'>56/80</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.51% </span>
+                <span class="strong">54.28% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>17/33</span>
+                <span class='fraction'>19/35</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.44% </span>
+                <span class="strong">46.42% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>12/27</span>
+                <span class='fraction'>13/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.13% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>49/67</span>
+                <span class='fraction'>54/72</span>
             </div>
         
             
@@ -279,7 +279,18 @@
 <a name='L214'></a><a href='#L214'>214</a>
 <a name='L215'></a><a href='#L215'>215</a>
 <a name='L216'></a><a href='#L216'>216</a>
-<a name='L217'></a><a href='#L217'>217</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -294,6 +305,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -319,22 +333,30 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -495,7 +517,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useEffect, useRef, useState } from 'react';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -510,6 +532,9 @@ interface Message {
     userName: string;
     timestamp: Date;
 }
+&nbsp;
+const generateId = () =&gt;
+    `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 &nbsp;
 // Используем порт 32000 для обращения к backend через NodePort
 const SERVER_URL = `http://${window.location.hostname}:32000`;
@@ -527,35 +552,43 @@ const Chat: React.FC = () =&gt; {
     const [messages, setMessages] = useState&lt;Message[]&gt;([]);
     const [isConnected, setIsConnected] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [newName, setNewName] = useState(user<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame || <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>;
+    const [newName, setNewName] = useState(user<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame ?? <span class="branch-1 cbranch-no" title="branch not covered" >'')</span>;
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const [currentInput, setCurrentInput] = useState(''); // Новое состояние для текущего ввода
 &nbsp;
     const messagesEndRef = useRef&lt;HTMLDivElement | null&gt;(null);
     const navigate = useNavigate();
 &nbsp;
+    const handleNewMessageLogic = useCallback(<span class="fstat-no" title="function not covered" >(n</span>ewMessage: Message) =&gt; {
+<span class="cstat-no" title="statement not covered" >        setMessages(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; {</span>
+            // Уровень 1 (колбэк для setMessages)
+            // Проверяем, есть ли уже такое сообщение
+<span class="cstat-no" title="statement not covered" >            <span class="missing-if-branch" title="if path not taken" >I</span>if (!prev.some(<span class="fstat-no" title="function not covered" >(m</span>sg) =&gt; <span class="cstat-no" title="statement not covered" >msg.id === newMessage.id)</span>) {</span>
+                // Уровень 2 (колбэк для some)
+<span class="cstat-no" title="statement not covered" >                return [...prev, newMessage]; </span>// Уровень 3
+            }
+<span class="cstat-no" title="statement not covered" >            return prev; </span>// Уровень 3
+        });
+    }, []); // Зависимостей нет, так как логика самодостаточна
+&nbsp;
     useEffect(() =&gt; {
         setIsConnected(socket.connected);
 &nbsp;
-        socket.on('connect', <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >setIsConnected(true))</span>;
-        socket.on('disconnect', <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >setIsConnected(false))</span>;
+        const handleConnect = <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >setIsConnected(true);</span>
+        const handleDisconnect = <span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >setIsConnected(false);</span>
 &nbsp;
-        socket.on('message', <span class="fstat-no" title="function not covered" >(n</span>ewMessage: Message) =&gt; {
-<span class="cstat-no" title="statement not covered" >            setMessages(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; {</span>
-                // Проверяем, есть ли уже такое сообщение
-<span class="cstat-no" title="statement not covered" >                <span class="missing-if-branch" title="if path not taken" >I</span>if (!prev.some(<span class="fstat-no" title="function not covered" >(m</span>sg) =&gt; <span class="cstat-no" title="statement not covered" >msg.id === newMessage.id)</span>) {</span>
-<span class="cstat-no" title="statement not covered" >                    return [...prev, newMessage];</span>
-                }
-<span class="cstat-no" title="statement not covered" >                return prev;</span>
-            });
-        });
+        // Подписываемся на события, используя извлеченные обработчики
+        socket.on('connect', handleConnect);
+        socket.on('disconnect', handleDisconnect);
+        socket.on('message', handleNewMessageLogic); // Используем извлеченный обработчик
 &nbsp;
         return () =&gt; {
-            socket.off('connect');
-            socket.off('disconnect');
-            socket.off('message');
+            // Отписываемся от событий, используя те же ссылки на функции
+            socket.off('connect', handleConnect);
+            socket.off('disconnect', handleDisconnect);
+            socket.off('message', handleNewMessageLogic);
         };
-    }, []);
+    }, [handleNewMessageLogic]);
 &nbsp;
     useEffect(() =&gt; {
         const check = async () =&gt; {
@@ -610,7 +643,7 @@ const Chat: React.FC = () =&gt; {
                     ) : (
                         &lt;span&gt;
                             [&lt;span className="text-red-300"&gt;not connected&lt;/span&gt;
-                            ]
+                            ]{/* Explicit spacing added */}
                         &lt;/span&gt;
                     )}
                 &lt;/div&gt;
@@ -678,8 +711,8 @@ const Chat: React.FC = () =&gt; {
                         &lt;/div&gt;
                     ))}
                     &lt;div className="chat-messages"&gt;
-                        {lines.map((line, index) =&gt; (
-                            &lt;div key={index} className="message"&gt;
+                        {lines.map((line) =&gt; (
+                            &lt;div key={generateId()} className="message"&gt;
                                 {line}
                             &lt;/div&gt;
                         ))}
@@ -718,7 +751,7 @@ export default Chat;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-17T19:00:58.007Z
+                at 2025-06-19T12:15:27.857Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

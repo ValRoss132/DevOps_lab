@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.17% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>62/68</span>
+                <span class='fraction'>66/72</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.44% </span>
+                <span class="strong">94.73% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>17/18</span>
+                <span class='fraction'>18/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.32% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>56/62</span>
+                <span class='fraction'>60/66</span>
             </div>
         
             
@@ -259,7 +259,10 @@
 <a name='L194'></a><a href='#L194'>194</a>
 <a name='L195'></a><a href='#L195'>195</a>
 <a name='L196'></a><a href='#L196'>196</a>
-<a name='L197'></a><a href='#L197'>197</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -270,6 +273,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">98x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">33x</span>
@@ -383,6 +389,14 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">33x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">33x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">33x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -446,14 +460,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useEffect, useState, useRef } from 'react';
 import { useAuthStore } from '../../stores/useAuthStore';
@@ -466,6 +472,9 @@ interface TerminalLine {
     isPassword?: boolean;
     withLoader?: boolean;
 }
+&nbsp;
+const generateId = () =&gt;
+    `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 &nbsp;
 const Registration: React.FC = () =&gt; {
     const { register } = useAuthStore();
@@ -579,6 +588,14 @@ const Registration: React.FC = () =&gt; {
         setCurrentInput(e.target.value);
     };
 &nbsp;
+    const isHiddenInput =
+        lines[lines.length - 1]?.content === 'Enter a password:' ||
+        lines[lines.length - 1]?.content === 'Confirm password:';
+&nbsp;
+    const inputClassName = `text-white bg-transparent border-none focus:outline-none flex-1 ${
+        isHiddenInput ? 'opacity-0' : ''
+    }`;
+&nbsp;
     return (
         &lt;div className="p-1 text-m terminal-container"&gt;
             &lt;div className="flex items-center mb-4 gap-2"&gt;
@@ -594,9 +611,9 @@ const Registration: React.FC = () =&gt; {
 &nbsp;
             &lt;div className="primary-container overflow-hidden flex"&gt;
                 &lt;div className="flex-1 overflow-y-auto flex flex-col"&gt;
-                    {lines.map((line, index) =&gt; (
+                    {lines.map((line) =&gt; (
                         &lt;div
-                            key={index}
+                            key={generateId()}
                             className={`flex ${line.type === 'error' ? 'text-red-300' : 'text-white'}`}
                         &gt;
                             &lt;span className="mr-2"&gt;{'~ $'}&amp;nbsp;&lt;/span&gt;
@@ -629,15 +646,7 @@ const Registration: React.FC = () =&gt; {
                                 value={currentInput}
                                 onChange={handleChange}
                                 onKeyDown={handleKeyDown}
-                                className={`text-white bg-transparent border-none focus:outline-none flex-1 ${
-                                    lines[lines.length - 1]?.content ===
-                                    'Enter a password:'
-                                        ? 'opacity-0'
-                                        : lines[lines.length - 1]?.content ===
-                                            'Confirm password:'
-                                          ? 'opacity-0'
-                                          : ''
-                                }`}
+                                className={inputClassName}
                                 disabled={isLoading}
                             /&gt;
                         &lt;/div&gt;
@@ -658,7 +667,7 @@ export default Registration;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-17T19:00:58.007Z
+                at 2025-06-19T12:15:27.857Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

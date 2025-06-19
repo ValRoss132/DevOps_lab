@@ -14,7 +14,7 @@ interface TerminalLine {
 }
 
 const generateId = () =>
-    `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 
 const Auth: React.FC = () => {
     const { login, checkAuth } = useAuthStore();
