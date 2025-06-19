@@ -232,14 +232,12 @@ jobs:
     notify:
         name: Send Telegram Notification
         runs-on: ubuntu-latest
-        needs: [test, analyze, build, docker-publish-backend, docker-publish-frontend]
+        needs: [test, analyze, build, docker-publish-backend, docker-publish-frontend, deploy]
         if: always()
 
         steps:
             - name: Send Telegram Notification
               run: |
-                  STATUS=""
-
                   # Проверяем успешность обязательных этапов
                   REQUIRED_SUCCESS=true
 
@@ -322,7 +320,7 @@ jobs:
 
                   # Deploy этап показываем только если он запускался
                   if [[ "${{ needs.deploy.result }}" != '' && "${{ needs.deploy.result }}" != 'skipped' ]]; then
-                    STEPS+=$'\n- Deploy: '
+                    STEPS+=$'\n- Deploy Applications: '
                     if [[ "${{ needs.deploy.result }}" == 'success' ]]; then
                       STEPS+='✅'
                     else
@@ -342,7 +340,6 @@ jobs:
         name: Deploy to Kubernetes
         runs-on: ubuntu-latest
         needs: [docker-publish-backend, docker-publish-frontend]
-        # Деплой запускается только если хотя бы один из этапов публикации образов прошел успешно
         if: |
             always() &&
             (needs.docker-publish-backend.result == 'success' ||
@@ -357,30 +354,11 @@ jobs:
               with:
                   version: "latest"
 
-            - name: Create static kubeconfig
+            - name: Set up kubeconfig
               run: |
-                  cat << EOF > kubeconfig
-                  apiVersion: v1
-                  clusters:
-                  - cluster:
-                      certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM1ekNDQWMrZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJMU1EVXhOekUxTlRReU5Wb1hEVE0xTURVeE5URTFOVFF5TlZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTzVsCkd1ZC9oWmkxM0FpcVBvSTFpOE96K0c4N3p3aTRneFZVcCtRTGpkUVo1eGF6ZGJBZGdnQXNteUVGTWNBbVdQYTEKaDEyNVphNjFWQnFzTVRNQmRaNVZGUno4LzduK0pPa3ZuN3ZZcmNHam9JQWc5SGh6YzZoNkh4Q2VuVThFVXFnVwpWV1pRQ2tUd0F4WUxoQXE3OTJJdC8zMGk0eGV6dUUxNDJ3eWNxcEFxQk9MSndyb0hQZmFrRnh4QkxOdmY3b1VCCkZWNGRCMDNnTU1sMFpWaG4weEVqeklQb0RnZjk2QUx5MnRGTWJmbXEwWGhsMTZVWk9jU2ZvckxER1ExV1BrT1oKQ2d3SVNlOVc0ZnMxb0pya0RLa0w4eVJHcU9wcjhJT2VpQmYvY2JhbSt6emxUZUZRVW52aEtobWhNU1B2b1FYTQpKRDFSWndkWFV1YmFuTk1mTjVzQ0F3RUFBYU5DTUVBd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0hRWURWUjBPQkJZRUZDZC9Sd01aK1RoVzdDa0YxZ0toSkg0K3BNZW5NQTBHQ1NxR1NJYjMKRFFFQkN3VUFBNElCQVFDZVQxaDJRdzUyU25HcTYvdmdpZjFZaDJLWFAzc2doS3JRd2dneGJVQkQ1aXNzdE5RWAoxL0M4dWVia1ZLbzBocm0xSWx3eEJmSS9XS0R5M0I3eVh2MlBzQkNiaGdYQUtYOFVFcEovMGJXcGNtNzhKenpYCjRtZlNNbDFjWnNlcHFoLzlSSmxBVmRDVFJwcUlUaHlpSi94QnAzSWFCcEMvN1NjTTdlTjloVzAwR3FFK2FnVm0KQk91aE5IU1prbTl6RmdDbGoyL29MNVJHN21najZTaWN6WVdMQ0FaNUdjbS9GZGlOc0ZwTVBQWkdobHl6VUg0NgpIaTVuUEJCdzcycS9UNVJqcFVCWWZNTjNsU25ZaWMrODhRYTlUZW9sc0t0S2pXZ1NQbHFXVEpyRHFHditTNXRQCmlpdHdYOHRNZjBxWWRYalRWZnZHS1BSMjZVTTRuVWRIM1RSMQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
-                      server: https://130.193.57.101
-                    name: yc-managed-k8s-cat0ukd4cigqqlhds5it
-                  contexts:
-                  - context:
-                      cluster: yc-managed-k8s-cat0ukd4cigqqlhds5it
-                      user: yc-managed-k8s-cat0ukd4cigqqlhds5it
-                    name: yc-devops-cluster
-                  current-context: yc-devops-cluster
-                  kind: Config
-                  preferences: {}
-                  users:
-                  - name: yc-managed-k8s-cat0ukd4cigqqlhds5it
-                    user:
-                      token: ${{ secrets.YC_TOKEN }}
-                  EOF
-                  chmod 600 kubeconfig
-                  export KUBECONFIG=$PWD/kubeconfig
+                  mkdir -p $HOME/.kube
+                  echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+                  chmod 600 $HOME/.kube/config
 
             - name: Deploy Backend
               if: needs.docker-publish-backend.result == 'success'
@@ -388,9 +366,17 @@ jobs:
                   export KUBECONFIG=$PWD/kubeconfig
                   kubectl apply -f backend-deployment.yaml --validate=false
                   kubectl apply -f backend-hpa.yaml --validate=false
+                  # Принудительный перезапуск подов бэкенда
+                  kubectl rollout restart deployment backend-deployment
+                  # Ждем завершения развертывания
+                  kubectl rollout status deployment backend-deployment --timeout=3m
 
             - name: Deploy Frontend
               if: needs.docker-publish-frontend.result == 'success'
               run: |
                   export KUBECONFIG=$PWD/kubeconfig
                   kubectl apply -f frontend-deployment.yaml --validate=false
+                  # Принудительный перезапуск подов фронтенда
+                  kubectl rollout restart deployment frontend-deployment
+                  # Ждем завершения развертывания
+                  kubectl rollout status deployment frontend-deployment --timeout=3m
