@@ -120,7 +120,7 @@ const Auth: React.FC = () => {
                     await checkAuth();
                     setTimeout(() => {
                         navigate('/chat');
-                    }, 2500);
+                    }, 2000);
                 }
             } else if (currentLine && currentLine.type === 'error') {
                 // После ошибки снова запрашиваем никнейм
