@@ -391,9 +391,9 @@ jobs:
                 kubectl apply -f backend-deployment.yaml
                 kubectl apply -f backend-hpa.yaml
                 # Принудительный перезапуск подов бэкенда
-                kubectl rollout restart deployment backend-deployment
+                kubectl rollout restart deployment backend
                 # Ждем завершения развертывания
-                kubectl rollout status deployment backend-deployment --timeout=3m
+                kubectl rollout status deployment backend --timeout=3m
 
             - name: Deploy Frontend
               if: needs.docker-publish-frontend.result == 'success'
@@ -401,6 +401,6 @@ jobs:
                 export KUBECONFIG=$PWD/kubeconfig
                 kubectl apply -f frontend-deployment.yaml
                 # Принудительный перезапуск подов фронтенда
-                kubectl rollout restart deployment frontend-deployment
+                kubectl rollout restart deployment frontend
                 # Ждем завершения развертывания
-                kubectl rollout status deployment frontend-deployment --timeout=3m
+                kubectl rollout status deployment frontend --timeout=3m
